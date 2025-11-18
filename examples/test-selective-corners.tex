@@ -1,0 +1,68 @@
+\documentclass{article}
+\usepackage{lpmresonance}
+\begin{document}
+
+\section{Selective Inside Corner Highlighting}
+
+\subsection{Example 1: Highlight first inside corner only}
+
+Path P1 (\texttt{10010010}) has 2 inside corners at (2,1) and (4,2).
+
+\begin{center}
+\begin{tikzpicture}
+\lpDeclarePath{P1}{10010010}
+\drawGrid{P1}
+\drawLatticePath[thick, red]{P1}
+% Highlight only the FIRST inside corner
+\highlightInsideCorner[red]{P1}{1}
+\end{tikzpicture}
+\end{center}
+
+\subsection{Example 2: Highlight second inside corner only}
+
+\begin{center}
+\begin{tikzpicture}
+\lpDeclarePath{P1b}{10010010}
+\drawGrid{P1b}
+\drawLatticePath[thick, blue]{P1b}
+% Highlight only the SECOND inside corner
+\highlightInsideCorner[blue]{P1b}{2}
+\end{tikzpicture}
+\end{center}
+
+\subsection{Example 3: Highlight both corners with different styles}
+
+\begin{center}
+\begin{tikzpicture}
+\lpDeclarePath{P1c}{10010010}
+\drawGrid{P1c}
+\drawLatticePath[thick, green]{P1c}
+% Highlight first corner in red
+\highlightInsideCorner[red]{P1c}{1}
+% Highlight second corner in blue
+\highlightInsideCorner[blue]{P1c}{2}
+\end{tikzpicture}
+\end{center}
+
+\subsection{Example 4: Three paths, selective highlighting}
+
+\begin{center}
+\begin{tikzpicture}
+\lpDeclarePath{PA}{10010010}
+\lpDeclarePath{PB}{10000101}
+\lpDeclarePath{PC}{00000111}
+
+\drawGrid{PA}
+
+% Draw all three paths
+\drawLatticePath[thick, red]{PA}
+\drawLatticePath[thick, blue]{PB}
+\drawLatticePath[thick, green]{PC}
+
+% Highlight first inside corner of PA only
+\highlightInsideCorner[red]{PA}{1}
+
+\end{tikzpicture}
+\end{center}
+
+\end{document}

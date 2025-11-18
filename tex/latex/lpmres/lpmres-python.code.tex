@@ -1,0 +1,13 @@
+\ProvidesFile{lpmres-python.code.tex}[PythonTeX bridge]
+% \lpDeclarePath{<name>}{<bits>}
+\newcommand\lpDeclarePath[2]{%
+  \pyc{import json; from lpm_paths import declare_path_from_json; spec = {"name": r"""#1""", "bits": r"""#2"""}; print(declare_path_from_json(json.dumps(spec, ensure_ascii=False)))}%
+  \lp@inputifready{lp@lastdeclaredpathfile}%
+}
+% \shadeBetweenBits{<Lbits>}{<Ubits>}{<lname>}{<uname>}
+\newcommand\shadeBetweenBits[4]{%
+  \pyc{import json; from lpm_paths import between_from_json; spec = {"L": r"""#1""", "U": r"""#2""", "lname": r"""#3""", "uname": r"""#4"""}; print(between_from_json(json.dumps(spec, ensure_ascii=False)))}%
+  \lp@inputifready{lp@lastdeclaredbetweenfile}%
+  \lp@ensurebetweenplaceholder{#3}{#4}%
+}
+\endinput

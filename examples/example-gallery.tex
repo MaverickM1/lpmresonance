@@ -1,0 +1,683 @@
+% To compile this file:
+% - From command line: Use 'latexmk -pdf example-gallery.tex' (uses local latexmkrc)
+% - From TeXShop/editor: Set TEXINPUTS environment or install package to TeX tree
+% - The lpmresonance package is located at: ../tex/latex/lpmres/
+
+\documentclass{article}
+\usepackage{lpmresonance}
+\usepackage[margin=1in]{geometry}
+\usepackage{minted}
+
+\title{LPM Resonance Package Gallery}
+\author{Complete Feature Demonstration}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Basic Lattice Paths}
+
+\subsection{Simple Path Declaration and Drawing}
+
+Declare a lattice path from a bit string (0=right, 1=up) and draw it:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{S1}{0010011001}
+\drawLatticePath{S1}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{S1}{0010011001}
+  \drawLatticePath{S1}
+  \drawGrid{S1}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{S1}{0010011001}
+  \drawLatticePath[lplpath/label upmarks]{S1}
+  \drawGrid{S1}
+\end{tikzpicture}
+\end{center}
+
+With \texttt{lplpath/label upmarks} option, the right diagram shows upmark labels.
+
+\subsection{Styled Lattice Paths}
+
+Apply TikZ styling options:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{RedPath}{0110}
+\drawLatticePath[red, line width=2pt]{RedPath}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{RedPath}{0110}
+  \drawLatticePath[red, line width=2pt]{RedPath}
+  \draw[gray!30] (0,0) grid (4,4);
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{BluePath}{1001}
+  \drawLatticePath[blue, dashed, line width=1.5pt]{BluePath}
+  \draw[gray!30] (0,0) grid (4,4);
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{GreenPath}{0101}
+  \drawLatticePath[green!60!black, ultra thick, dotted]{GreenPath}
+  \draw[gray!30] (0,0) grid (4,4);
+\end{tikzpicture}
+\end{center}
+
+\subsection{Upmark Labels}
+
+Display coordinate labels at each upstep:
+
+\begin{minted}[fontsize=\small]{latex}
+\drawLatticePath[red, line width=2pt, lplpath/label upmarks]{RedPath}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{RedPath}{0110}
+  \drawLatticePath[red, line width=2pt, lplpath/label upmarks]{RedPath}
+  \draw[gray!30] (0,0) grid (4,4);
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{BluePath}{1001}
+  \drawLatticePath[blue, dashed, line width=1.5pt, lplpath/label upmarks]{BluePath}
+  \draw[gray!30] (0,0) grid (4,4);
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{GreenPath}{0101}
+  \drawLatticePath[green!60!black, ultra thick, dotted, lplpath/label upmarks]{GreenPath}
+  \draw[gray!30] (0,0) grid (4,4);
+\end{tikzpicture}
+\end{center}
+
+\section{Path Constraints}
+
+\subsection{Bounded Paths}
+
+Draw paths that stay between lower and upper bounds:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{Lower}{00011111}
+\lpDeclarePath{Upper}{11110000}
+\drawLatticePath[red, very thick]{Lower}
+\drawLatticePath[blue, very thick]{Upper}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{Lower}{00011111}
+  \lpDeclarePath{Upper}{11110000}
+  \drawLatticePath[red, very thick]{Lower}
+  \drawLatticePath[blue, very thick]{Upper}
+  \drawGrid{Lower}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{Lower}{00011111}
+  \lpDeclarePath{Upper}{11110000}
+  \drawLatticePath[red, very thick]{Lower}
+  \drawLatticePath[blue, very thick]{Upper}
+  \drawGrid{Lower}
+\end{tikzpicture}
+\end{center}
+
+With upmark labels:
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{Lower}{00011111}
+  \lpDeclarePath{Upper}{11110000}
+  \drawLatticePath[red, very thick, lplpath/label upmarks]{Lower}
+  \drawLatticePath[blue, very thick, lplpath/label upmarks]{Upper}
+  \drawGrid{Lower}
+\end{tikzpicture}
+\end{center}
+
+\subsection{Coordinate Specification}
+
+Declare paths using coordinate lists:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{Stairs1}{00011}
+\drawLatticePath[orange, ultra thick]{Coords1}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{Stairs1}{00011}
+  \drawLatticePath[violet, line width=1.5pt]{Coords1}
+  \drawGrid{Coords1}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{Stairs1}{00011}
+  \drawLatticePath[violet, line width=1.5pt, lplpath/label upmarks]{Coords1}
+  \drawGrid{Coords1}
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{Stairs2}{000111}
+  \drawLatticePath[orange, ultra thick]{Coords2}
+  \drawGrid{Coords2}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{Stairs2}{000111}
+  \drawLatticePath[orange, ultra thick, lplpath/label upmarks]{Coords2}
+  \drawGrid{Coords2}
+\end{tikzpicture}
+\end{center}
+
+\section{Multiple Paths}
+
+\subsection{Overlapping Paths}
+
+Draw multiple paths in the same diagram:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{Path1}{00110011}
+\lpDeclarePath{Path2}{01010101}
+\lpDeclarePath{Path3}{00001111}
+\drawLatticePath[red]{Path1}
+\drawLatticePath[blue]{Path2}
+\drawLatticePath[green!60!black]{Path3}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{Path1}{00110011}
+  \lpDeclarePath{Path2}{01010101}
+  \lpDeclarePath{Path3}{00001111}
+  \drawLatticePath[red]{Path1}
+  \drawLatticePath[blue]{Path2}
+  \drawLatticePath[green!60!black]{Path3}
+  \drawGrid{Path1}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{Path1}{00110011}
+  \lpDeclarePath{Path2}{01010101}
+  \lpDeclarePath{Path3}{00001111}
+  \drawLatticePath[red]{Path1}
+  \drawLatticePath[blue]{Path2}
+  \drawLatticePath[green!60!black]{Path3}
+  \drawGrid{Path1}
+\end{tikzpicture}
+\end{center}
+
+With upmark labels:
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{Path1}{00110011}
+  \lpDeclarePath{Path2}{01010101}
+  \lpDeclarePath{Path3}{00001111}
+  \drawLatticePath[red, lplpath/label upmarks]{Path1}
+  \drawLatticePath[blue, lplpath/label upmarks]{Path2}
+  \drawLatticePath[green!60!black, lplpath/label upmarks]{Path3}
+  \drawGrid{Path1}
+\end{tikzpicture}
+\end{center}
+
+\subsection{Path Regions}
+
+Shade the region between two paths:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{LB1}{000111}
+\lpDeclarePath{UB1}{110001}
+\shadeBetweenBits{000111}{110001}{LB1}{UB1}
+\shadeBetween[fill=yellow!30]{LB1}{UB1}
+\drawLatticePath[red, very thick]{LB1}
+\drawLatticePath[blue, very thick]{UB1}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{LB1}{000111}
+  \lpDeclarePath{UB1}{110001}
+  \shadeBetweenBits{000111}{110001}{LB1}{UB1}
+  \shadeBetween[fill=yellow!30]{LB1}{UB1}
+  \drawLatticePath[red, very thick]{LB1}
+  \drawLatticePath[blue, very thick]{UB1}
+  \drawGrid{LB1}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{LB1}{000111}
+  \lpDeclarePath{UB1}{110001}
+  \shadeBetweenBits{000111}{110001}{LB1}{UB1}
+  \shadeBetween[fill=yellow!30]{LB1}{UB1}
+  \drawLatticePath[red, very thick]{LB1}
+  \drawLatticePath[blue, very thick]{UB1}
+  \drawGrid{LB1}
+\end{tikzpicture}
+\end{center}
+
+With upmark labels:
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{LB1}{000111}
+  \lpDeclarePath{UB1}{110001}
+  \shadeBetweenBits{000111}{110001}{LB1}{UB1}
+  \shadeBetween[fill=yellow!30]{LB1}{UB1}
+  \drawLatticePath[red, very thick, lplpath/label upmarks]{LB1}
+  \drawLatticePath[blue, very thick, lplpath/label upmarks]{UB1}
+  \drawGrid{LB1}
+\end{tikzpicture}
+\end{center}
+
+Different shading:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{LB2}{000001111}
+\lpDeclarePath{UB2}{111100000}
+\shadeBetweenBits{000001111}{111100000}{LB2}{UB2}
+\shadeBetween[fill=cyan!20]{LB2}{UB2}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{LB2}{000001111}
+  \lpDeclarePath{UB2}{111100000}
+  \shadeBetweenBits{000001111}{111100000}{LB2}{UB2}
+  \shadeBetween[fill=cyan!20]{LB2}{UB2}
+  \drawLatticePath[red, thick]{LB2}
+  \drawLatticePath[blue, thick]{UB2}
+  \drawGrid{LB2}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{LB2}{000001111}
+  \lpDeclarePath{UB2}{111100000}
+  \shadeBetweenBits{000001111}{111100000}{LB2}{UB2}
+  \shadeBetween[fill=cyan!20]{LB2}{UB2}
+  \drawLatticePath[red, thick]{LB2}
+  \drawLatticePath[blue, thick]{UB2}
+  \drawGrid{LB2}
+\end{tikzpicture}
+\end{center}
+
+With upmark labels:
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{LB2}{000001111}
+  \lpDeclarePath{UB2}{111100000}
+  \shadeBetweenBits{000001111}{111100000}{LB2}{UB2}
+  \shadeBetween[fill=cyan!20]{LB2}{UB2}
+  \drawLatticePath[red, thick, lplpath/label upmarks]{LB2}
+  \drawLatticePath[blue, thick, lplpath/label upmarks]{UB2}
+  \drawGrid{LB2}
+\end{tikzpicture}
+\end{center}
+
+\section{Advanced Features}
+
+\subsection{Complex Path Intersections}
+
+Multiple paths with shaded regions:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{P1}{00001111}
+\lpDeclarePath{P2}{00110011}
+\lpDeclarePath{P3}{01010101}
+\shadeBetweenBits{00001111}{00110011}{P1}{P2}
+\shadeBetween[fill=red!10]{P1}{P2}
+\shadeBetweenBits{00110011}{01010101}{P2}{P3}
+\shadeBetween[fill=blue!10]{P2}{P3}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{P1}{00001111}
+  \lpDeclarePath{P2}{00110011}
+  \lpDeclarePath{P3}{01010101}
+  \shadeBetweenBits{00001111}{00110011}{P1}{P2}
+  \shadeBetween[fill=red!10]{P1}{P2}
+  \shadeBetweenBits{00110011}{01010101}{P2}{P3}
+  \shadeBetween[fill=blue!10]{P2}{P3}
+  \drawLatticePath[red, very thick]{P1}
+  \drawLatticePath[green!60!black, very thick]{P2}
+  \drawLatticePath[blue, very thick]{P3}
+  \drawGrid{P1}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{P1}{00001111}
+  \lpDeclarePath{P2}{00110011}
+  \lpDeclarePath{P3}{01010101}
+  \shadeBetweenBits{00001111}{00110011}{P1}{P2}
+  \shadeBetween[fill=red!10]{P1}{P2}
+  \shadeBetweenBits{00110011}{01010101}{P2}{P3}
+  \shadeBetween[fill=blue!10]{P2}{P3}
+  \drawLatticePath[red, very thick]{P1}
+  \drawLatticePath[green!60!black, very thick]{P2}
+  \drawLatticePath[blue, very thick]{P3}
+  \drawGrid{P1}
+\end{tikzpicture}
+\end{center}
+
+With upmark labels:
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{P1}{00001111}
+  \lpDeclarePath{P2}{00110011}
+  \lpDeclarePath{P3}{01010101}
+  \shadeBetweenBits{00001111}{00110011}{P1}{P2}
+  \shadeBetween[fill=red!10]{P1}{P2}
+  \shadeBetweenBits{00110011}{01010101}{P2}{P3}
+  \shadeBetween[fill=blue!10]{P2}{P3}
+  \drawLatticePath[red, very thick, lplpath/label upmarks]{P1}
+  \drawLatticePath[green!60!black, very thick, lplpath/label upmarks]{P2}
+  \drawLatticePath[blue, very thick, lplpath/label upmarks]{P3}
+  \drawGrid{P1}
+\end{tikzpicture}
+\end{center}
+
+\subsection{Large Paths}
+
+Longer lattice paths:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{Big}{000011110000111100001111}
+\drawLatticePath[violet, line width=2.5pt]{Big}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.5]
+  \lpDeclarePath{Big}{000011110000111100001111}
+  \drawLatticePath[violet, line width=2.5pt]{Big}
+  \drawGrid{Big}
+\end{tikzpicture}
+\end{center}
+
+With upmark labels:
+
+\begin{center}
+\begin{tikzpicture}[scale=0.5]
+  \lpDeclarePath{Big}{000011110000111100001111}
+  \drawLatticePath[violet, line width=2.5pt, lplpath/label upmarks]{Big}
+  \drawGrid{Big}
+\end{tikzpicture}
+\end{center}
+
+\section{Inside Corner Highlighting}
+
+\subsection{Automatic Inside Corner Detection}
+
+Show all inside corners (east-to-north transitions):
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{IC}{10010010}
+\drawLatticePath[thick, red]{IC}
+\drawLatticePath[lplpath/show inside corners]{IC}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{IC1}{10010010}
+  \drawLatticePath[thick, red]{IC1}
+  \drawLatticePath[lplpath/show inside corners]{IC1}
+  \drawGrid{IC1}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{IC2}{10000101}
+  \drawLatticePath[thick, blue]{IC2}
+  \drawLatticePath[lplpath/show inside corners]{IC2}
+  \drawGrid{IC2}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{IC3}{00000111}
+  \drawLatticePath[thick, green!60!black]{IC3}
+  \drawLatticePath[lplpath/show inside corners]{IC3}
+  \drawGrid{IC3}
+\end{tikzpicture}
+\end{center}
+
+\subsection{Selective Corner Highlighting}
+
+Highlight specific inside corners with custom colors:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{PA}{10010010}
+\lpDeclarePath{PB}{10000101}
+\drawLatticePath[thick, red]{PA}
+\drawLatticePath[thick, blue]{PB}
+\highlightInsideCorner[orange]{PA}{1}
+\highlightInsideCorner[purple]{PB}{2}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{PA}{10010010}
+  \lpDeclarePath{PB}{10000101}
+  \lpDeclarePath{PC}{00000111}
+  \drawLatticePath[thick, red]{PA}
+  \drawLatticePath[thick, blue]{PB}
+  \drawLatticePath[thick, green!60!black]{PC}
+  \highlightInsideCorner[orange]{PA}{1}
+  \highlightInsideCorner[purple]{PB}{2}
+  \drawGrid{PA}
+\end{tikzpicture}
+\end{center}
+
+\section{Advanced TikZ Integration}
+
+\subsection{Using Explicit TikZ Environments}
+
+Direct TikZ integration for custom layouts:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{Fancy1}{001101}
+\lpDeclarePath{Fancy2}{010011}
+\begin{tikzpicture}
+  \shadeBetweenBits{001101}{010011}{Fancy1}{Fancy2}
+  \shadeBetween[fill=purple!10]{Fancy1}{Fancy2}
+  \drawLatticePath[draw=blue!80!black]{Fancy1}
+  \drawLatticePath[draw=red!80!black]{Fancy2}
+  \drawGrid{Fancy1}
+\end{tikzpicture}
+\end{minted}
+
+\begin{center}
+\lpDeclarePath{Fancy1}{001101}
+\lpDeclarePath{Fancy2}{010011}
+\begin{tikzpicture}
+  \shadeBetweenBits{001101}{010011}{Fancy1}{Fancy2}
+  \shadeBetween[fill=purple!10]{Fancy1}{Fancy2}
+  \drawLatticePath[draw=blue!80!black]{Fancy1}
+  \drawLatticePath[draw=red!80!black]{Fancy2}
+  \drawGrid{Fancy1}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \shadeBetweenBits{001101}{010011}{Fancy1}{Fancy2}
+  \shadeBetween[fill=purple!10]{Fancy1}{Fancy2}
+  \drawLatticePath[draw=blue!80!black]{Fancy1}
+  \drawLatticePath[draw=red!80!black]{Fancy2}
+  \drawGrid{Fancy1}
+\end{tikzpicture}
+\end{center}
+
+With upmark labels:
+
+\begin{center}
+\begin{tikzpicture}
+  \shadeBetween[fill=purple!10]{Fancy1}{Fancy2}
+  \drawLatticePath[draw=blue!80!black, lplpath/label upmarks]{Fancy1}
+  \drawLatticePath[draw=red!80!black, lplpath/label upmarks]{Fancy2}
+  \drawGrid{Fancy1}
+\end{tikzpicture}
+\end{center}
+
+\section{Permutation Patterns}
+
+\subsection{Various Permutation Lattice Paths}
+
+Paths representing different permutations:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{PermA}{01011010}
+\lpDeclarePath{PermB}{10100101}
+\lpDeclarePath{PermC}{00110101}
+\lpDeclarePath{PermD}{01001011}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+  \lpDeclarePath{PermA}{01011010}
+  \drawLatticePath[thick, teal]{PermA}
+  \drawGrid{PermA}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}[scale=0.8]
+  \lpDeclarePath{PermB}{10100101}
+  \drawLatticePath[thick, teal]{PermB}
+  \drawGrid{PermB}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}[scale=0.8]
+  \lpDeclarePath{PermC}{00110101}
+  \drawLatticePath[thick, teal]{PermC}
+  \drawGrid{PermC}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}[scale=0.8]
+  \lpDeclarePath{PermD}{01001011}
+  \drawLatticePath[thick, teal]{PermD}
+  \drawGrid{PermD}
+\end{tikzpicture}
+\end{center}
+
+With upmark labels:
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+  \lpDeclarePath{PermA}{01011010}
+  \drawLatticePath[thick, teal, lplpath/label upmarks]{PermA}
+  \drawGrid{PermA}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}[scale=0.8]
+  \lpDeclarePath{PermB}{10100101}
+  \drawLatticePath[thick, teal, lplpath/label upmarks]{PermB}
+  \drawGrid{PermB}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}[scale=0.8]
+  \lpDeclarePath{PermC}{00110101}
+  \drawLatticePath[thick, teal, lplpath/label upmarks]{PermC}
+  \drawGrid{PermC}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}[scale=0.8]
+  \lpDeclarePath{PermD}{01001011}
+  \drawLatticePath[thick, teal, lplpath/label upmarks]{PermD}
+  \drawGrid{PermD}
+\end{tikzpicture}
+\end{center}
+
+\section{Custom Analysis}
+
+\subsection{Path Properties}
+
+Analyze and visualize path properties:
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{Analyzed}{001011010}
+  \drawLatticePath[brown, very thick]{Analyzed}
+  \drawGrid{Analyzed}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{Analyzed}{001011010}
+  \drawLatticePath[brown, very thick, lplpath/label upmarks]{Analyzed}
+  \drawGrid{Analyzed}
+\end{tikzpicture}
+\end{center}
+
+
+\section{Comprehensive Feature Demo}
+
+Combining all features: shaded regions, upmark labels, and selective inside corner highlighting.
+
+\begin{minted}[fontsize=\small]{latex}
+% Declare three paths
+\lpDeclarePath{Lower}{0000000011111111}
+\lpDeclarePath{Middle}{0001011001101101}
+\lpDeclarePath{Upper}{1010101110001100}
+
+% Generate between region polygon data
+\shadeBetweenBits{0000000011111111}{0001011001101101}{Lower}{Middle}
+\shadeBetweenBits{0001011001101101}{1010101110001100}{Middle}{Upper}
+
+% Shade the regions
+\shadeBetween[fill=blue!10]{Lower}{Middle}
+\shadeBetween[fill=red!10]{Middle}{Upper}
+
+% Draw paths with upmark labels
+\drawLatticePath[blue, very thick, lplpath/label upmarks]{Lower}
+\drawLatticePath[purple, very thick, lplpath/label upmarks]{Middle}
+\drawLatticePath[red, very thick, lplpath/label upmarks]{Upper}
+
+% Highlight specific inside corners
+\highlightInsideCorner[red!70]{Upper}{1}
+\highlightInsideCorner[red!70]{Upper}{3}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  % Declare the three paths
+  \lpDeclarePath{Lower}{0000000011111111}
+  \lpDeclarePath{Middle}{0001011001101101}
+  \lpDeclarePath{Upper}{1010101110001100}
+  
+  % Generate between region data
+  \shadeBetweenBits{0000000011111111}{0001011001101101}{Lower}{Middle}
+  \shadeBetweenBits{0001011001101101}{1010101110001100}{Middle}{Upper}
+  
+  % Shade the regions with different colors
+  \shadeBetween[fill=blue!10]{Lower}{Middle}
+  \shadeBetween[fill=red!10]{Middle}{Upper}
+  
+  % Draw the paths with upmark labels
+  \drawLatticePath[blue, very thick, lplpath/label upmarks]{Lower}
+  \drawLatticePath[purple, very thick, lplpath/label upmarks]{Middle}
+  \drawLatticePath[red, very thick, lplpath/label upmarks]{Upper}
+  
+  % Highlight 1st and 3rd inside corners of Upper path
+  \highlightInsideCorner[red!70]{Upper}{1}
+  \highlightInsideCorner[red!70]{Upper}{3}
+  
+  % Draw the grid
+  \drawGrid{Upper}
+\end{tikzpicture}
+\end{center}
+
+This example demonstrates:
+\begin{itemize}
+  \item \textcolor{blue}{Lower path} (\texttt{0000000011111111}): all rights then all ups
+  \item \textcolor{purple}{Middle path} (\texttt{0001011001101101}): lexicographically between lower and upper
+  \item \textcolor{red}{Upper path} (\texttt{1010101110001100}): with 1st and 3rd inside corners highlighted
+  \item Two shaded regions with different colors
+  \item Upmark labels on all three paths showing coordinates
+\end{itemize}
+
+\end{document}

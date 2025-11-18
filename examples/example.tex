@@ -1,0 +1,21 @@
+\documentclass{article}
+\usepackage{lpmresonance}
+\begin{document}
+
+\lpDeclarePath{S}{010011001}
+\begin{schubertpic}
+  \drawLatticePath{S}
+\end{schubertpic}
+
+\lpDeclarePath{demo}{01011010}
+\begin{schubertpic}
+  \drawLatticePath{demo}
+\end{schubertpic}
+
+\shadeBetweenBits{00110101}{01011001}{L}{U}
+\begin{schubertpic}
+  \shadeBetween[gray!20]{L}{U}
+  \drawBetween{L}{U}
+\end{schubertpic}
+
+\end{document}

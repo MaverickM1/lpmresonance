@@ -1,0 +1,19 @@
+\documentclass{article}
+\usepackage{lpmresonance}
+\begin{document}
+
+\section{Multiple Inside Corners}
+
+Path with multiple inside corners: \texttt{01010101}
+
+\begin{center}
+\begin{tikzpicture}
+\lpDeclarePath{Alternating}{01010101}
+\drawGrid{Alternating}
+\drawLatticePath[thick, blue, lplpath/show inside corners, lplpath/label upmarks]{Alternating}
+\end{tikzpicture}
+\end{center}
+
+This path alternates between East and North, so every North step creates an inside corner.
+
+\end{document}

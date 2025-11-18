@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage{lpmresonance}
+\usepackage[margin=1in]{geometry}
+
+\begin{document}
+
+\section*{Lattice Path Features Demo}
+
+\begin{center}
+\begin{tikzpicture}
+  % Declare the three paths
+  \lpDeclarePath{Lower}{0000000011111111}
+  \lpDeclarePath{Middle}{0001011001101101}
+  \lpDeclarePath{Upper}{1010101110001100}
+  
+  % Generate between region data for Lower-Middle
+  \shadeBetweenBits{0000000011111111}{0001011001101101}{Lower}{Middle}
+  
+  % Generate between region data for Middle-Upper
+  \shadeBetweenBits{0001011001101101}{1010101110001100}{Middle}{Upper}
+  
+  % Shade the regions with different colors
+  \shadeBetween[fill=blue!10]{Lower}{Middle}
+  \shadeBetween[fill=red!10]{Middle}{Upper}
+  
+  % Draw the paths with upmark labels
+  \drawLatticePath[blue, very thick, lplpath/label upmarks]{Lower}
+  \drawLatticePath[purple, very thick, lplpath/label upmarks]{Middle}
+  \drawLatticePath[red, very thick, lplpath/label upmarks]{Upper}
+  
+  % Highlight 1st and 3rd inside corners of Upper path
+  \highlightInsideCorner[red!70]{Upper}{1}
+  \highlightInsideCorner[red!70]{Upper}{3}
+  
+  % Draw the grid
+  \drawGrid{Upper}
+\end{tikzpicture}
+\end{center}
+
+\subsection*{Explanation}
+\begin{itemize}
+  \item \textcolor{blue}{Lower path}: \texttt{0000000011111111} (all rights, then all ups)
+  \item \textcolor{purple}{Middle path}: \texttt{0001011001101101} (random path between lower and upper)
+  \item \textcolor{red}{Upper path}: \texttt{1010101110001100} (with 1st and 3rd inside corners marked)
+  \item \textcolor{blue!50}{Blue region}: Between lower and middle paths
+  \item \textcolor{red!50}{Red region}: Between middle and upper paths
+  \item All paths have upmark labels showing coordinates
+  \item Upper path has filled circles at its 1st and 3rd inside corners
+\end{itemize}
+
+\end{document}

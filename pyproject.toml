@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lpmresonance"
+version = "0.0.1"
+description = "PythonTeX-backed lattice paths in TikZ"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name="Prajwal", email="pudanshi@uwo.ca" }]
+dependencies = []
+
+[tool.setuptools]
+package-dir = {"" = "python"}
+packages = ["lpm_paths", "lpm_paths.emitters"]

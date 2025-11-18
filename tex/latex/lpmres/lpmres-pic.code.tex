@@ -1,0 +1,9 @@
+\ProvidesFile{lpmres-pic.code.tex}[picture environment]
+\newenvironment{schubertpic}[1][]{%
+  \begin{tikzpicture}[x=0.6cm,y=0.6cm, #1]%
+  \draw[gray!30] (0,0) grid +(20,20);%
+  \draw[->] (0,0)--+(21,0); \draw[->] (0,0)--+(0,21);%
+}{%
+  \end{tikzpicture}%
+}
+\endinput
