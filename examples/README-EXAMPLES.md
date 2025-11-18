@@ -18,8 +18,7 @@ TEXINPUTS=../tex/latex/lpmres: pdflatex example-gallery.tex
 
 ## Available Examples
 
-### `example-gallery.tex` ⭐ **RECOMMENDED START HERE**
-**Complete feature demonstration** (110KB, 6 pages)
+### `example-gallery.tex`
 
 Shows all package features:
 - Basic Schubert paths from permutations
@@ -31,13 +30,6 @@ Shows all package features:
 - Large diagrams
 - Publication-quality styling
 - Python computation integration
-
-**Status:** ✅ Fully working, no warnings
-
-### `test-01-schubert.tex`
-Minimal test case for Schubert path rendering.
-
-**Status:** ✅ Working (33KB PDF)
 
 ### Other Examples
 - `example-complete.tex` - Previous version (uses old API)
@@ -160,16 +152,4 @@ After compilation you'll see:
   - `schubert-*.tex` - Coordinate macros for Schubert paths
   - `lpath-*.tex` - Coordinate macros for generic paths
   - `between-*.tex` - Between-region data
-
-## Next Steps
-
-1. ✅ Open `example-gallery.pdf` to see all features
-2. ✅ Copy sections from `example-gallery.tex` as templates
-3. ✅ Modify permutations and styling to fit your needs
-4. ✅ Read the package documentation in `docs/`
-
 ---
-
-**Last Updated:** November 16, 2025  
-**Package Version:** Development  
-**Status:** All core features working ✅
