@@ -21,14 +21,11 @@ TEXINPUTS=../tex/latex/lpmres: pdflatex example-gallery.tex
 ### `example-gallery.tex`
 
 Shows all package features:
-- Basic Schubert paths from permutations
 - Generic lattice paths from bit strings and coordinates
 - Styled paths with TikZ options
 - Multiple paths on one diagram
 - Between-path region shading
-- Boundary drawing
-- Large diagrams
-- Publication-quality styling
+- Inside corners
 - Python computation integration
 
 ### Other Examples
@@ -65,7 +62,7 @@ Shows all package features:
 
 ### Compilation Workflow
 
-The compilation requires **THREE steps**:
+The compilation requires:
 
 1. **First pdflatex run**: Extracts Python code blocks, creates placeholders
 2. **pythontex run**: Executes Python code, generates coordinate data
