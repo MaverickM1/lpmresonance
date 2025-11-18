@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk texlive-latex-extra texlive-pictures texlive-science \
+            texlive-luatex python3-pygments
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest mkdocs mkdocs-material
+
+      - name: Run Python tests
+        run: ./scripts/run-python-tests.sh
+
+      - name: Build documentation
+        run: ./scripts/build-docs.sh
+
+      - name: Compile TeX example
+        run: |
+          latexmk -pdf -shell-escape -interaction=nonstopmode \
+            -r ci/latexmk/latexmkrc.ci \
+            examples/example.tex
