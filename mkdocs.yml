@@ -1,8 +1,19 @@
 nav:
   - Home: index.md
+  - Changelog: changelog.md
+  - FAQ: faq.md
   - User Guide:
       - Installation: user-guide/installation.md
       - Quickstart: user-guide/quickstart.md
+      - Lattice path macros: user-guide/lattice-path-macros.md
+      - Options and keys: user-guide/options-and-keys.md
+      - Shading between paths: user-guide/shading-between-paths.md
+      - Troubleshooting: user-guide/troubleshooting.md
   - Developer Guide:
       - Architecture: developer-guide/architecture.md
+      - Caching: developer-guide/caching.md
+      - Contributing: developer-guide/contributing.md
+      - Emitter contracts: developer-guide/emitter-contracts.md
+      - Geometry invariants: developer-guide/geometry-invariants.md
+      - Manifest schema: developer-guide/manifest-schema.md
       - Upgrade Notes: developer-guide/upgrade-notes.md
