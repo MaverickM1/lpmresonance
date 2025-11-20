@@ -3,11 +3,14 @@
 \newif\iflp@lpath@labelupmarks
 % Boolean for inside corner visualization
 \newif\iflp@lpath@showinsidecorners
+% Boolean for showing endpoints
+\newif\iflp@lpath@showendpoints
 % \drawLatticePath[<tikz opts>]{<safeName>}
 \newcommand\drawLatticePath[2][]{%
   \begingroup
     \lp@lpath@labelupmarksfalse % Reset at the start of each path
     \lp@lpath@showinsidecornersfalse % Reset inside corner flag
+    \lp@lpath@showendpointsfalse % Reset endpoint flag
     \tikzset{#1}% Process options to potentially set the flags
     \def\lp@readyflag{0}%
     \ifcsname lp@path@ready@#2\endcsname
@@ -27,6 +30,19 @@
           \csname lp@path@insidecornerlabels@#2\endcsname
         \fi
       \fi
+      % Show endpoints if enabled
+      \iflp@lpath@showendpoints
+        \ifcsname lp@path@gridsize@#2\endcsname
+          % Get the endpoint coordinates
+          \edef\lp@endpoint{\csname lp@path@gridsize@#2\endcsname}%
+          % Draw start point at (0,0)
+          \fill[black] (0,0) circle (2.5pt);%
+          \node[anchor=north east,scale=0.85,font=\scriptsize,black] at (0,0) {(0,0)};%
+          % Draw end point
+          \fill[black] \lp@endpoint circle (2.5pt);%
+          \node[anchor=south west,scale=0.85,font=\scriptsize,black] at \lp@endpoint {\lp@endpoint};%
+        \fi
+      \fi
       \endgroup
     \else
       \endgroup
@@ -37,6 +53,7 @@
 \tikzset{
   lplpath/label upmarks/.code={\lp@lpath@labelupmarkstrue},
   lplpath/show inside corners/.code={\lp@lpath@showinsidecornerstrue},
+  lplpath/show endpoints/.code={\lp@lpath@showendpointstrue},
 }
 
 % \highlightInsideCorner[<style>]{<pathName>}{<corner number (1-based)>}

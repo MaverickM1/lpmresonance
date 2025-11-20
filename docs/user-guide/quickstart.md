@@ -34,7 +34,7 @@ Save the following snippet as `examples/hello.tex`. It is the same file used in
 \end{document}
 ```
 
-` \lpDeclarePath` (and `\shadeBetweenBits`) call into the Python package through
+`\lpDeclarePath` (and `\shadeBetweenBits`) call into the Python package through
 PythonTeX. They emit small `.tex` files holding coordinates and register them in
 the `lp-cache/` directory.
 
@@ -46,15 +46,27 @@ From the example directory run:
 latexmk -pdf -shell-escape hello.tex
 ```
 
-The first pass runs `pythontex`. Look for lines such as:
+**That's it!** With the `latexmkrc` configuration from the installation guide,
+latexmk automatically:
+1. Runs `pdflatex` to generate `.pytxcode` files
+2. Detects the `.pytxcode` and runs `pythontex` to execute Python code
+3. Runs `pdflatex` again to incorporate the generated coordinates
+4. Resolves cross-references with additional passes as needed
+
+You should see output like:
 
 ```
-Package lpmresonance Warning: Sanitized path name 'demo' collides with another declaration...
+This is PythonTeX 0.18
+...
+PythonTeX:  hello - 0 error(s), 0 warning(s)
+...
+Output written on hello.pdf (X pages, XXXXX bytes)
 ```
 
-Warnings that mention “not ready; run pythontex and recompile” mean the
-PythonTeX pass did not run; re-run latexmk and confirm `-shell-escape` is
-enabled.
+If you see warnings like "not ready; run pythontex and recompile", verify that:
+- The `latexmkrc` file is in your document directory (or project root)
+- The `-shell-escape` flag is enabled
+- `python3` is in your PATH
 
 ## 3. Inspect the cache
 

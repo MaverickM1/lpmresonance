@@ -36,6 +36,8 @@ env/
 *.log
 *.out
 *.pdf
+# Exception: keep CTAN documentation PDF
+!tex/doc/lpmresonance/lpmresonance-doc.pdf
 *.synctex.gz
 *.toc
 *.pytxcode

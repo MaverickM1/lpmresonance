@@ -9,6 +9,9 @@ nav:
       - Options and keys: user-guide/options-and-keys.md
       - Shading between paths: user-guide/shading-between-paths.md
       - Troubleshooting: user-guide/troubleshooting.md
+  - API Reference:
+      - Python API: api/python.md
+      - TeX Macros: api/tex-macro-reference.md
   - Developer Guide:
       - Architecture: developer-guide/architecture.md
       - Caching: developer-guide/caching.md

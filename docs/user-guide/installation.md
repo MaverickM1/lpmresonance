@@ -57,25 +57,60 @@ The TeX layer lives under `tex/latex/lpmres`. You have two easy options:
 Either approach works so long as `\usepackage{lpmresonance}` can find the
 `.sty` and `.code.tex` files.
 
-## Configure latexmk / PythonTeX
+## Configure latexmk for PythonTeX
 
-Enable shell escape and register PythonTeX as a custom dependency. The snippet
-below is the minimal set we ship in `examples/latexmkrc`:
+The package includes a pre-configured `latexmkrc` that automatically handles the
+PythonTeX build process. You can either **copy it** or **write your own**.
 
-```perl
-$force_mode = 1;
-$pdflatex = 'pdflatex -interaction=nonstopmode -shell-escape %O %S';
-add_cus_dep('pytxcode','tex',0,'pythontex');
-sub pythontex { return system("pythontex \"$_[0]\""); }
-$clean_ext .= ' %R.pytxcode %R.pytxmcr pythontex-files-%R';
+### Option 1: Use the included configuration (recommended)
+
+Copy `tex/doc/lpmresonance/latexmkrc` to your document directory:
+
+```bash
+cp tex/doc/lpmresonance/latexmkrc .
 ```
 
-Point `pythontex` at whatever interpreter hosts the `lpm_paths` package. When
-latexmk runs it will call:
+This configuration:
+- Sets `TEXINPUTS` to find the package files
+- Enables `-shell-escape` for PythonTeX and minted
+- Automatically runs PythonTeX when `.pytxcode` files are generated
+- Detects `python3` or falls back to common macOS/Linux locations
+- Cleans up auxiliary files properly
 
-1. `pdflatex` to produce `.pytxcode`.
-2. `pythontex` to execute the snippets embedded in your document.
-3. `pdflatex` again to include the cache files emitted by Python.
+With this in place, you can simply run:
+
+```bash
+latexmk -pdf yourfile.tex
+```
+
+The build process is fully automated:
+1. First `pdflatex` run generates `.pytxcode` files
+2. `pythontex` executes Python code and creates cache files
+3. Subsequent `pdflatex` runs incorporate the cached coordinates
+4. Cross-references are resolved automatically
+
+### Option 2: Custom configuration
+
+If you need custom settings, here's the minimal configuration:
+
+```perl
+# Set TEXINPUTS to find lpmresonance package (adjust path as needed)
+$ENV{"TEXINPUTS"} = "path/to/tex/latex/lpmres:" . ($ENV{"TEXINPUTS"} // "");
+
+# Enable shell-escape and register PythonTeX
+$pdf_mode = 1;
+$pdflatex = 'pdflatex -interaction=nonstopmode -shell-escape %O %S';
+
+add_cus_dep('pytxcode', 'tex', 0, 'run_pythontex');
+sub run_pythontex {
+    return system("python3 /Library/TeX/texbin/pythontex --interpreter python:python3 \"$_[0]\"");
+}
+
+$clean_ext .= ' %R.pytxcode pythontex-files-%R';
+$max_repeat = 5;
+```
+
+Adjust the `pythontex` path and interpreter to match your system.
 
 ## Cache directory
 
