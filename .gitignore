@@ -82,3 +82,4 @@ htmlcov/
 # Documentation builds
 docs/_build/
 site/
+*.synctex(busy)

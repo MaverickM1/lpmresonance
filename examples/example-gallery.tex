@@ -23,7 +23,7 @@ Declare a lattice path from a bit string (0=right, 1=up) and draw it:
 
 \begin{minted}[fontsize=\small]{latex}
 \lpDeclarePath{S1}{0010011001}
-\drawLatticePath{S1}
+\drawLatticePath[lplpath/show endpoints]{S1}
 \end{minted}
 
 \begin{center}
@@ -106,24 +106,24 @@ Display coordinate labels at each upstep:
 Draw paths that stay between lower and upper bounds:
 
 \begin{minted}[fontsize=\small]{latex}
-\lpDeclarePath{Lower}{00011111}
-\lpDeclarePath{Upper}{11110000}
+\lpDeclarePath{Lower}{000011111}
+\lpDeclarePath{Upper}{10110100}
 \drawLatticePath[red, very thick]{Lower}
 \drawLatticePath[blue, very thick]{Upper}
 \end{minted}
 
 \begin{center}
 \begin{tikzpicture}
-  \lpDeclarePath{Lower}{00011111}
-  \lpDeclarePath{Upper}{11110000}
+\lpDeclarePath{Lower}{000011111}
+\lpDeclarePath{Upper}{10110100}
   \drawLatticePath[red, very thick]{Lower}
   \drawLatticePath[blue, very thick]{Upper}
   \drawGrid{Lower}
 \end{tikzpicture}
 \quad
 \begin{tikzpicture}
-  \lpDeclarePath{Lower}{00011111}
-  \lpDeclarePath{Upper}{11110000}
+\lpDeclarePath{Lower}{000011111}
+\lpDeclarePath{Upper}{10110100}
   \drawLatticePath[red, very thick]{Lower}
   \drawLatticePath[blue, very thick]{Upper}
   \drawGrid{Lower}
@@ -134,8 +134,8 @@ With upmark labels:
 
 \begin{center}
 \begin{tikzpicture}
-  \lpDeclarePath{Lower}{00011111}
-  \lpDeclarePath{Upper}{11110000}
+\lpDeclarePath{Lower}{000011111}
+\lpDeclarePath{Upper}{10110100}
   \drawLatticePath[red, very thick, lplpath/label upmarks]{Lower}
   \drawLatticePath[blue, very thick, lplpath/label upmarks]{Upper}
   \drawGrid{Lower}
@@ -245,8 +245,8 @@ Shade the region between two paths:
 
 \begin{center}
 \begin{tikzpicture}
-  \lpDeclarePath{LB1}{000111}
-  \lpDeclarePath{UB1}{110001}
+\lpDeclarePath{LB1}{000111}
+\lpDeclarePath{UB1}{110001}
   \shadeBetweenBits{000111}{110001}{LB1}{UB1}
   \shadeBetween[fill=yellow!30]{LB1}{UB1}
   \drawLatticePath[red, very thick]{LB1}
@@ -283,16 +283,16 @@ Different shading:
 
 \begin{minted}[fontsize=\small]{latex}
 \lpDeclarePath{LB2}{000001111}
-\lpDeclarePath{UB2}{111100000}
-\shadeBetweenBits{000001111}{111100000}{LB2}{UB2}
+\lpDeclarePath{UB2}{101010010}
+\shadeBetweenBits{000001111}{101010010}{LB2}{UB2}
 \shadeBetween[fill=cyan!20]{LB2}{UB2}
 \end{minted}
 
 \begin{center}
 \begin{tikzpicture}
   \lpDeclarePath{LB2}{000001111}
-  \lpDeclarePath{UB2}{111100000}
-  \shadeBetweenBits{000001111}{111100000}{LB2}{UB2}
+  \lpDeclarePath{UB2}{101010010}
+  \shadeBetweenBits{000001111}{101010010}{LB2}{UB2}
   \shadeBetween[fill=cyan!20]{LB2}{UB2}
   \drawLatticePath[red, thick]{LB2}
   \drawLatticePath[blue, thick]{UB2}
@@ -301,8 +301,8 @@ Different shading:
 \quad
 \begin{tikzpicture}
   \lpDeclarePath{LB2}{000001111}
-  \lpDeclarePath{UB2}{111100000}
-  \shadeBetweenBits{000001111}{111100000}{LB2}{UB2}
+  \lpDeclarePath{UB2}{101010010}
+  \shadeBetweenBits{000001111}{101010010}{LB2}{UB2}
   \shadeBetween[fill=cyan!20]{LB2}{UB2}
   \drawLatticePath[red, thick]{LB2}
   \drawLatticePath[blue, thick]{UB2}
@@ -315,8 +315,8 @@ With upmark labels:
 \begin{center}
 \begin{tikzpicture}
   \lpDeclarePath{LB2}{000001111}
-  \lpDeclarePath{UB2}{111100000}
-  \shadeBetweenBits{000001111}{111100000}{LB2}{UB2}
+  \lpDeclarePath{UB2}{101010010}
+  \shadeBetweenBits{000001111}{101010010}{LB2}{UB2}
   \shadeBetween[fill=cyan!20]{LB2}{UB2}
   \drawLatticePath[red, thick, lplpath/label upmarks]{LB2}
   \drawLatticePath[blue, thick, lplpath/label upmarks]{UB2}
@@ -394,13 +394,13 @@ Longer lattice paths:
 
 \begin{minted}[fontsize=\small]{latex}
 \lpDeclarePath{Big}{000011110000111100001111}
-\drawLatticePath[violet, line width=2.5pt]{Big}
+\drawLatticePath[violet, thick]{Big}
 \end{minted}
 
 \begin{center}
 \begin{tikzpicture}[scale=0.5]
   \lpDeclarePath{Big}{000011110000111100001111}
-  \drawLatticePath[violet, line width=2.5pt]{Big}
+  \drawLatticePath[violet, thick]{Big}
   \drawGrid{Big}
 \end{tikzpicture}
 \end{center}
@@ -410,7 +410,7 @@ With upmark labels:
 \begin{center}
 \begin{tikzpicture}[scale=0.5]
   \lpDeclarePath{Big}{000011110000111100001111}
-  \drawLatticePath[violet, line width=2.5pt, lplpath/label upmarks]{Big}
+  \drawLatticePath[violet, thick, lplpath/label upmarks]{Big}
   \drawGrid{Big}
 \end{tikzpicture}
 \end{center}
