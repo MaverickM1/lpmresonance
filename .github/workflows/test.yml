@@ -48,15 +48,23 @@ jobs:
         brew install --cask basictex
         # Wait for installation to complete
         sleep 10
+        # Add to PATH immediately
+        export PATH="/Library/TeX/texbin:$PATH"
         # Update tlmgr and install packages
-        sudo /Library/TeX/texbin/tlmgr update --self
-        sudo /Library/TeX/texbin/tlmgr install latexmk pythontex
+        sudo tlmgr update --self
+        sudo tlmgr install latexmk pythontex collection-latexrecommended
+        # Verify installation worked
+        which pdflatex
+        which pythontex
+        which latexmk
     
     - name: Add TeX Live to PATH (macOS)
       if: runner.os == 'macOS'
       run: |
-        # Add TeX Live to PATH for subsequent steps
+        # Add TeX Live to PATH for all subsequent steps
         echo "/Library/TeX/texbin" >> $GITHUB_PATH
+        # Verify PATH is set
+        echo "PATH is now: $PATH"
     
     - name: Install Python dependencies
       run: |
