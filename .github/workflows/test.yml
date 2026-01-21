@@ -54,7 +54,8 @@ jobs:
         sudo tlmgr update --self
         sudo tlmgr install latexmk pythontex collection-latexrecommended \
           minted fvextra catchfile xstring framed fancyvrb upquote lineno \
-          float caption geometry pgf
+          float caption geometry pgf currfile etoolbox amsmath amsfonts amssymb \
+          xcolor hyperref bookmark
         # Verify installation worked
         which pdflatex
         which pythontex
