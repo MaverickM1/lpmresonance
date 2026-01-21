@@ -1,5 +1,7 @@
 # lpmresonance
 
+[![Test](https://github.com/MaverickM1/lpmresonance/actions/workflows/test.yml/badge.svg)](https://github.com/MaverickM1/lpmresonance/actions/workflows/test.yml)
+
 This is a package to draw lattice path diagrams using bitstrings. When used
 successfully, it can draw the images like:
 
@@ -13,9 +15,9 @@ successfully, it can draw the images like:
 
 ## Installation
 
-### Scripts (per system, easiest)
+### Automated Installation (Recommended)
 
-TeX Live and Python 3.9+ are assumed to already be installed.
+TeX Live 2022+ and Python 3.9+ must be installed first.
 
 ```bash
 # macOS
@@ -31,18 +33,12 @@ Windows (PowerShell):
 .\scripts\install-windows.ps1
 ```
 
-### Manual wiring (deprecated, but possible)
+The installer:
+- Installs the Python package (`lpm_paths`)
+- Copies TeX files to your `TEXMFHOME` directory
+- Verifies the installation with a test compilation
 
-```bash
-pip install -e .
-```
-
-Editable installs keep the `lpm_paths` module in sync with your working tree while
-you iterate on the package or compile the bundled examples. Pair this with either
-a `TEXINPUTS` entry pointing at `tex/latex/lpmres` or copy the `.sty`/`.code.tex`
-files into your personal TEXMF tree so `\usepackage{lpmresonance}` can find them.
-Ensure `latexmk` (or your preferred driver) runs `pdflatex` with `-shell-escape`
-and registers `pythontex` as a custom dependency, mirroring `examples/latexmkrc`.
+> **Security Note**: This package uses PythonTeX to execute Python code during LaTeX compilation. The `-shell-escape` flag is required, which allows LaTeX to run external programs. Only compile documents from trusted sources.
 
 ## Quickstart
 
@@ -70,12 +66,14 @@ Compile the trimmed example below (it matches the walkthrough in
 latexmk -pdf -shell-escape hello.tex
 ```
 
-The first pass invokes PythonTeX, which writes `lp-cache/path-*.tex/json` (path
-data) and `lp-cache/between-*.tex` (between regions). Re-running `latexmk`
-reuses the cached coordinates until the bit strings or names change.
+**What happens:**
+1. First `pdflatex` run extracts Python code and creates placeholders
+2. `pythontex` executes Python, generates `lp-cache/path-*.tex` coordinate files
+3. Second `pdflatex` run incorporates the cached data into your PDF
 
-> Caveat: use `latexmk` so PythonTeX runs at the right time. If you insist on
-> manual runs, use `pdflatex`, then `pythontex`, then `pdflatex` again.
+`latexmk` automates this workflow. The cached files persist across compilations—changing a bit string triggers regeneration automatically.
+
+> **Note**: `-shell-escape` is required for PythonTeX execution. See the security note in the Installation section.
 
 ## Cache Management
 
@@ -113,6 +111,43 @@ rm -rf examples/lp-cache/between-*
 - To reclaim disk space
 
 > **Note**: Deleting cache files is safe. They will be regenerated on the next compilation (adds one extra LaTeX pass).
+
+### Troubleshooting Cache Issues
+
+**Problem: Coordinates not updating after code changes**
+```bash
+# Force regeneration by cleaning cache
+rm -rf lp-cache/
+latexmk -pdf -shell-escape yourfile.tex
+```
+
+**Problem: "Cache file not found" errors**
+- Ensure PythonTeX ran successfully (check for `pythontex-files-*/` directory)
+- Verify Python package is installed: `python -c "import lpm_paths; print('OK')"`
+- Check `latexmkrc` is present (handles automatic PythonTeX execution)
+
+**Problem: Build fails with "shell-escape disabled"**
+```bash
+# Must use -shell-escape flag
+latexmk -pdf -shell-escape yourfile.tex
+```
+
+**Custom cache location** (for build systems):
+The cache directory defaults to `lp-cache/` relative to your `.tex` file. To override, set the working directory or adjust `latexmkrc` configuration.
+
+## Advanced Installation (Manual)
+
+For developers or custom setups, you can install manually:
+
+```bash
+pip install -e .
+```
+
+Then configure TeX to find the package files:
+- **Option 1**: Copy `tex/latex/lpmres/*` to your `TEXMFHOME/tex/latex/lpmres/` directory
+- **Option 2**: Set `TEXINPUTS` environment variable to include `tex/latex/lpmres`
+
+You'll also need to configure `latexmk` to run PythonTeX automatically. See `examples/latexmkrc` for the required configuration.
 
 ## Documentation
 
