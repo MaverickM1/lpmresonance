@@ -28,7 +28,15 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-extra-utils texlive-science latexmk
+        sudo apt-get install -y \
+          texlive-base \
+          texlive-latex-base \
+          texlive-latex-recommended \
+          texlive-latex-extra \
+          texlive-extra-utils \
+          texlive-science \
+          texlive-fonts-recommended \
+          latexmk
         # Verify installation
         which pdflatex
         which pythontex
