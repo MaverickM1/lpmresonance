@@ -65,6 +65,12 @@ jobs:
     
     - name: Verify TeX installation
       run: |
+        # Debug PATH on macOS
+        if [ "$RUNNER_OS" == "macOS" ]; then
+          echo "PATH before: $PATH"
+          export PATH="/Library/TeX/texbin:$PATH"
+          echo "PATH after: $PATH"
+        fi
         pdflatex --version
         pythontex --version
         latexmk --version
@@ -74,12 +80,18 @@ jobs:
         if [ "$RUNNER_OS" == "Linux" ]; then
           bash scripts/install-linux.sh
         elif [ "$RUNNER_OS" == "macOS" ]; then
+          # Ensure PATH is set in the subshell
+          export PATH="/Library/TeX/texbin:$PATH"
           bash scripts/install-macos.sh
         fi
       shell: bash
     
     - name: Compile example document
       run: |
+        # Ensure PATH for macOS
+        if [ "$RUNNER_OS" == "macOS" ]; then
+          export PATH="/Library/TeX/texbin:$PATH"
+        fi
         cd examples
         latexmk -pdf -shell-escape example-gallery.tex
     
