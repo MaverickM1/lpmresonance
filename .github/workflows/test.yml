@@ -28,7 +28,11 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-extra-utils latexmk
+        sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-extra-utils texlive-science latexmk
+        # Verify installation
+        which pdflatex
+        which pythontex
+        which latexmk
     
     - name: Install TeX Live (macOS)
       if: runner.os == 'macOS'
@@ -45,14 +49,23 @@ jobs:
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -e .
         pip install pytest
+    
+    - name: Install Python package (editable)
+      run: |
+        pip install -e .
     
     - name: Run Python tests
       run: |
         pytest tests/python -v
     
-    - name: Install package with installer script
+    - name: Verify TeX installation
+      run: |
+        pdflatex --version
+        pythontex --version || echo "pythontex not found, will be installed by installer"
+        latexmk --version
+    
+    - name: Run installer script (sets up TeX files in TEXMFHOME)
       run: |
         if [ "$RUNNER_OS" == "Linux" ]; then
           bash scripts/install-linux.sh
