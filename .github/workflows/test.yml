@@ -34,9 +34,13 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         brew install --cask basictex
-        eval "$(/usr/libexec/path_helper)"
-        sudo tlmgr update --self
-        sudo tlmgr install latexmk pythontex
+        # Wait for installation to complete
+        sleep 10
+        # Add TeX Live to PATH for subsequent steps
+        echo "/Library/TeX/texbin" >> $GITHUB_PATH
+        # Update tlmgr and install packages
+        sudo /Library/TeX/texbin/tlmgr update --self
+        sudo /Library/TeX/texbin/tlmgr install latexmk pythontex
     
     - name: Install Python dependencies
       run: |
