@@ -11,6 +11,9 @@ requires-python = ">=3.9"
 authors = [{ name="Prajwal", email="pudanshi@uwo.ca" }]
 dependencies = []
 
+[project.scripts]
+lpmresonance-doctor = "lpm_paths.doctor:main"
+
 [tool.setuptools]
 package-dir = {"" = "python"}
 packages = ["lpm_paths", "lpm_paths.emitters"]

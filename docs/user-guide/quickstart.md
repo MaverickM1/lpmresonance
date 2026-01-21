@@ -63,6 +63,19 @@ PythonTeX:  hello - 0 error(s), 0 warning(s)
 Output written on hello.pdf (X pages, XXXXX bytes)
 ```
 
+**Expected output:**
+- A PDF file (`hello.pdf`) containing your lattice path diagrams
+- The first diagram shows a grid with the path for `01011010`
+- The second diagram shows the shaded region between two paths
+
+**Expected generated files:**
+- `lp-cache/path-demo-*.tex` — TeX coordinate macros for your path
+- `lp-cache/path-demo-*.json` — machine-readable path data
+- `lp-cache/between-L-U-*.tex` — polygon coordinates for the between region
+- `pythontex-files-hello/` — PythonTeX working directory
+
+If compilation fails or the cache directory isn't created, see [Troubleshooting](../faq.md#cache-issues).
+
 If you see warnings like "not ready; run pythontex and recompile", verify that:
 - The `latexmkrc` file is in your document directory (or project root)
 - The `-shell-escape` flag is enabled

@@ -1,11 +1,15 @@
 # lpmresonance
 
 [![Test](https://github.com/MaverickM1/lpmresonance/actions/workflows/test.yml/badge.svg)](https://github.com/MaverickM1/lpmresonance/actions/workflows/test.yml)
+![Python Version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 This is a package to draw lattice path diagrams using bitstrings. When used
 successfully, it can draw the images like:
 
 ![Example lattice path diagrams](example-gallery.pdf)
+
+**What it does:** The TeX side provides macros and drawing environments; the Python side generates coordinates and polygon data, caching them as `.tex` files that LaTeX includes on subsequent passes.
 
 ## Requirements
 - Python 3.9–3.13 (uses `from __future__ import annotations` for forward refs)
@@ -39,6 +43,16 @@ The installer:
 - Verifies the installation with a test compilation
 
 > **Security Note**: This package uses PythonTeX to execute Python code during LaTeX compilation. The `-shell-escape` flag is required, which allows LaTeX to run external programs. Only compile documents from trusted sources.
+
+### Verify Installation
+
+After installation, run the diagnostic tool to verify everything is working:
+
+```bash
+lpmresonance-doctor
+```
+
+This checks that PythonTeX, latexmk, and the package are correctly installed.
 
 ## Quickstart
 

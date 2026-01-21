@@ -5,6 +5,7 @@ nav:
   - User Guide:
       - Installation: user-guide/installation.md
       - Quickstart: user-guide/quickstart.md
+      - Examples Gallery: user-guide/gallery.md
       - Lattice path macros: user-guide/lattice-path-macros.md
       - Options and keys: user-guide/options-and-keys.md
       - Shading between paths: user-guide/shading-between-paths.md
@@ -12,6 +13,7 @@ nav:
   - API Reference:
       - Python API: api/python.md
       - TeX Macros: api/tex-macro-reference.md
+      - API Stability: api/stability.md
   - Developer Guide:
       - Architecture: developer-guide/architecture.md
       - Caching: developer-guide/caching.md
