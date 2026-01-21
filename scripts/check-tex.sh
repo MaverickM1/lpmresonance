@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# NOTE: This script runs latexmk in the file's directory.
+# For files outside examples/, ensure a latexmkrc with PythonTeX config exists,
+# or copy examples/latexmkrc to the target directory.
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../" && pwd)"
 EXAMPLE="${1:-examples/example.tex}"
 
 if [[ ! -f "$ROOT/$EXAMPLE" ]]; then

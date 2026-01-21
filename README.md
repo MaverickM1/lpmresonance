@@ -1,3 +1,10 @@
+# lpmresonance
+
+This is a package to draw lattice path diagrams using bitstrings. When used
+successfully, it can draw the images like:
+
+![Example lattice path diagrams](example-gallery.pdf)
+
 ## Requirements
 - Python 3.9–3.13 (uses `from __future__ import annotations` for forward refs)
 - TeX Live 2022+ with PythonTeX
@@ -5,6 +12,26 @@
 > Roadmap note: When the minimum Python version becomes 3.14+, we will remove the future import and adopt `annotationlib` for any annotation introspection. See `docs/developer-guide/upgrade-notes.md`.
 
 ## Installation
+
+### Scripts (per system, easiest)
+
+TeX Live and Python 3.9+ are assumed to already be installed.
+
+```bash
+# macOS
+./scripts/install-macos.sh
+
+# Linux
+./scripts/install-linux.sh
+```
+
+Windows (PowerShell):
+
+```powershell
+.\scripts\install-windows.ps1
+```
+
+### Manual wiring (deprecated, but possible)
 
 ```bash
 pip install -e .
@@ -46,6 +73,9 @@ latexmk -pdf -shell-escape hello.tex
 The first pass invokes PythonTeX, which writes `lp-cache/path-*.tex/json` (path
 data) and `lp-cache/between-*.tex` (between regions). Re-running `latexmk`
 reuses the cached coordinates until the bit strings or names change.
+
+> Caveat: use `latexmk` so PythonTeX runs at the right time. If you insist on
+> manual runs, use `pdflatex`, then `pythontex`, then `pdflatex` again.
 
 ## Cache Management
 

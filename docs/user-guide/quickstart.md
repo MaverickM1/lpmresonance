@@ -66,7 +66,7 @@ Output written on hello.pdf (X pages, XXXXX bytes)
 If you see warnings like "not ready; run pythontex and recompile", verify that:
 - The `latexmkrc` file is in your document directory (or project root)
 - The `-shell-escape` flag is enabled
-- `python3` is in your PATH
+- `python` is in your PATH (Python 3.9+)
 
 ## 3. Inspect the cache
 

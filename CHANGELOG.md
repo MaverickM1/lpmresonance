@@ -7,7 +7,7 @@ A brief summary of recent work:
 
 - Expanded documentation (installation, quickstart, macro references, troubleshooting).
 - Added Python/TeX API docs, Schubert macro guide, and developer handbook pages.
-- Implemented helper scripts for pytest, docs build, golden regeneration, and TeX checks.
+- Implemented helper scripts for pytest, docs build, and TeX checks.
 - Cleaned up placeholder assets and added release workflow instructions to the README.
 
 ### 0.3.0 – 2025-11-11

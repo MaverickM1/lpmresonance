@@ -4,7 +4,13 @@ This directory contains example LaTeX documents demonstrating the `lpmresonance`
 
 ## Quick Start
 
-To compile any example:
+If you ran the installer script, you can compile with latexmk directly:
+
+```bash
+latexmk -pdf -shell-escape example-gallery.tex
+```
+
+To compile any example manually:
 
 ```bash
 # Set up environment
@@ -12,7 +18,7 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # Compile an example (3-step process)
 TEXINPUTS=../tex/latex/lpmres: pdflatex example-gallery.tex
-python3 /usr/local/texlive/2022/texmf-dist/scripts/pythontex/pythontex.py example-gallery.tex
+python /usr/local/texlive/2022/texmf-dist/scripts/pythontex/pythontex.py example-gallery.tex
 TEXINPUTS=../tex/latex/lpmres: pdflatex example-gallery.tex
 ```
 
@@ -39,7 +45,7 @@ Shows all package features:
 ### Required Tools
 1. **pdflatex** - TeX Live 2022 or later
 2. **pythontex** - Comes with TeX Live
-3. **Python 3** - With `lpm_paths` package installed
+3. **Python 3** - With `lpm_paths` package installed (ensure `python` resolves to Python 3.9+)
 
 ### Important Setup Steps
 
@@ -48,7 +54,7 @@ Shows all package features:
    pip install -e .
    ```
 
-2. **Create python symlink** (pythontex expects `python` command):
+2. **Create python symlink** (only if your system provides `python3` but not `python`):
    ```bash
    mkdir -p ~/.local/bin
    ln -sf /usr/local/bin/python3 ~/.local/bin/python
@@ -78,7 +84,7 @@ The compilation requires:
 ### Troubleshooting
 
 **"No such file or directory: 'python'"**
-- Create the symlink: `ln -sf /usr/local/bin/python3 ~/.local/bin/python`
+- Use `python3` if available, or create the symlink: `ln -sf /usr/local/bin/python3 ~/.local/bin/python`
 - Add to PATH: `export PATH="$HOME/.local/bin:$PATH"`
 
 **"File `lpmresonance.sty' not found"**
@@ -90,7 +96,7 @@ The compilation requires:
 
 **Python import errors**
 - Install package: `pip install -e .` from repo root
-- Verify: `python3 -c "import lpm_paths; print('OK')"`
+- Verify: `python -c "import lpm_paths; print('OK')"`
 
 ## Package API Quick Reference
 

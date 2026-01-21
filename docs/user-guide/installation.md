@@ -19,12 +19,36 @@ sure both halves are ready before compiling any document.
 You can double-check your toolchain with:
 
 ```bash
-python3 -V
+python -V  # or python3 -V
 pythontex --version
 kpsewhich pythontex.sty
 ```
 
-## Install the Python package
+## Scripted install (recommended)
+
+The installer scripts set up the Python package, copy the TeX files into your
+TEXMF tree, and run a small verification build. TeX Live and Python 3.9+ must
+already be installed.
+
+```bash
+# macOS
+./scripts/install-macos.sh
+
+# Linux
+./scripts/install-linux.sh
+```
+
+Windows (PowerShell):
+
+```powershell
+.\scripts\install-windows.ps1
+```
+
+If you need manual wiring (deprecated), follow the steps below.
+
+## Manual wiring (deprecated)
+
+### Install the Python package
 
 From a clone of this repository:
 
@@ -37,7 +61,7 @@ module in sync with your working tree, which is ideal while editing the
 package or running the examples. Replace `-e` with `--user` for a user-level
 install, or omit both flags when installing inside a virtual environment.
 
-## Make the LaTeX files discoverable
+### Make the LaTeX files discoverable
 
 The TeX layer lives under `tex/latex/lpmres`. You have two easy options:
 
@@ -57,24 +81,25 @@ The TeX layer lives under `tex/latex/lpmres`. You have two easy options:
 Either approach works so long as `\usepackage{lpmresonance}` can find the
 `.sty` and `.code.tex` files.
 
-## Configure latexmk for PythonTeX
+### Configure latexmk for PythonTeX
 
 The package includes a pre-configured `latexmkrc` that automatically handles the
 PythonTeX build process. You can either **copy it** or **write your own**.
 
 ### Option 1: Use the included configuration (recommended)
 
-Copy `tex/doc/lpmresonance/latexmkrc` to your document directory:
+Copy `examples/latexmkrc` to your document directory and adjust `TEXINPUTS` if
+needed:
 
 ```bash
-cp tex/doc/lpmresonance/latexmkrc .
+cp examples/latexmkrc .
 ```
 
 This configuration:
 - Sets `TEXINPUTS` to find the package files
 - Enables `-shell-escape` for PythonTeX and minted
 - Automatically runs PythonTeX when `.pytxcode` files are generated
-- Detects `python3` or falls back to common macOS/Linux locations
+- Uses `python`, falling back to `python3` if needed (ensure it resolves to Python 3)
 - Cleans up auxiliary files properly
 
 With this in place, you can simply run:
@@ -103,7 +128,7 @@ $pdflatex = 'pdflatex -interaction=nonstopmode -shell-escape %O %S';
 
 add_cus_dep('pytxcode', 'tex', 0, 'run_pythontex');
 sub run_pythontex {
-    return system("python3 /Library/TeX/texbin/pythontex --interpreter python:python3 \"$_[0]\"");
+    return system("python /Library/TeX/texbin/pythontex --interpreter python:python \"$_[0]\"");
 }
 
 $clean_ext .= ' %R.pytxcode pythontex-files-%R';
@@ -112,7 +137,7 @@ $max_repeat = 5;
 
 Adjust the `pythontex` path and interpreter to match your system.
 
-## Cache directory
+### Cache directory
 
 By default the Python back-end writes into `lp-cache/` (relative to the working
 directory). Ensure the user running LaTeX has write access there. You can remove

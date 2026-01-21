@@ -76,10 +76,27 @@ Compile with `latexmk -pdf -shell-escape` and the package generates cached coord
 ## Installation
 
 ```bash
+# macOS
+./scripts/install-macos.sh
+
+# Linux
+./scripts/install-linux.sh
+```
+
+Windows (PowerShell):
+
+```powershell
+.\scripts\install-windows.ps1
+```
+
+Manual wiring (deprecated):
+
+```bash
 pip install -e .
 ```
 
-See the [Installation Guide](user-guide/installation.md) for complete setup instructions including `TEXINPUTS` configuration and latexmk setup.
+See the [Installation Guide](user-guide/installation.md) for complete setup
+instructions including `TEXINPUTS` configuration and latexmk setup.
 
 ---
 

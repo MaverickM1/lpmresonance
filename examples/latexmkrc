@@ -8,13 +8,18 @@ $ENV{"TEXINPUTS"} = "../tex/latex/lpmres:" . ($ENV{"TEXINPUTS"} // "");
 $pdf_mode = 1;
 $pdflatex = 'pdflatex -interaction=nonstopmode -shell-escape %O %S';
 
-# PythonTeX configuration - cross-platform approach
-# Find python3 executable using which, with fallback
-my $python_exe = `which python3 2>/dev/null`;
-if ($python_exe) {
-    chomp($python_exe);
+# PythonTeX configuration - check python3 first, fallback to python
+my $python_exe;
+my $test = `python3 --version 2>&1`;
+if ($? == 0 && $test =~ /Python 3\.(9|1[0-9])/) {
+    $python_exe = 'python3';
 } else {
-    $python_exe = 'python3';  # fallback to PATH
+    $test = `python --version 2>&1`;
+    if ($? == 0 && $test =~ /Python 3\.(9|1[0-9])/) {
+        $python_exe = 'python';
+    } else {
+        die "Error: Python 3.9+ not found. Install from https://www.python.org/downloads/\n";
+    }
 }
 
 # Find pythontex executable using which, with fallback
