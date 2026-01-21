@@ -36,11 +36,13 @@ jobs:
           texlive-extra-utils \
           texlive-science \
           texlive-fonts-recommended \
+          texliveonfly \
           latexmk
         # Verify installation
         which pdflatex
         which pythontex
         which latexmk
+        which texliveonfly
     
     - name: Install TeX Live (macOS)
       if: runner.os == 'macOS'
@@ -50,15 +52,14 @@ jobs:
         sleep 10
         # Add to PATH immediately
         export PATH="/Library/TeX/texbin:$PATH"
-        # Update tlmgr and install packages
+        # Update tlmgr and install core packages
         sudo tlmgr update --self
-        sudo tlmgr install latexmk pythontex collection-latexrecommended \
-          minted fvextra catchfile xstring framed fancyvrb upquote \
-          float caption pgf tikz-cd
+        sudo tlmgr install latexmk pythontex texliveonfly collection-latexrecommended
         # Verify installation worked
         which pdflatex
         which pythontex
         which latexmk
+        which texliveonfly
     
     - name: Add TeX Live to PATH (macOS)
       if: runner.os == 'macOS'
@@ -111,6 +112,8 @@ jobs:
           export PATH="/Library/TeX/texbin:$PATH"
         fi
         cd examples
+        # Use texliveonfly to auto-install missing packages
+        texliveonfly --terminal_only --arguments='-shell-escape' example-gallery.tex || \
         latexmk -pdf -shell-escape example-gallery.tex
     
     - name: Check PDF output
