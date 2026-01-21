@@ -52,7 +52,9 @@ jobs:
         export PATH="/Library/TeX/texbin:$PATH"
         # Update tlmgr and install packages
         sudo tlmgr update --self
-        sudo tlmgr install latexmk pythontex collection-latexrecommended
+        sudo tlmgr install latexmk pythontex collection-latexrecommended \
+          minted fvextra catchfile xstring framed fancyvrb upquote \
+          float caption pgf tikz-cd
         # Verify installation worked
         which pdflatex
         which pythontex
