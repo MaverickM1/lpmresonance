@@ -1,0 +1,90 @@
+\ProvidesFile{lpmres-lpath.code.tex}[Named lattice path drawing]
+% Boolean for upmark labeling
+\newif\iflp@lpath@labelupmarks
+% Boolean for inside corner visualization
+\newif\iflp@lpath@showinsidecorners
+% Boolean for showing endpoints
+\newif\iflp@lpath@showendpoints
+% Boolean for showing step marks
+\newif\iflp@lpath@showstepmarks
+% \drawLatticePath[<tikz opts>]{<safeName>}
+\newcommand\drawLatticePath[2][]{%
+  \begingroup
+    \lp@lpath@labelupmarksfalse % Reset at the start of each path
+    \lp@lpath@showinsidecornersfalse % Reset inside corner flag
+    \lp@lpath@showendpointsfalse % Reset endpoint flag
+    \lp@lpath@showstepmarksfalse % Reset step marks flag
+    \tikzset{#1}% Process options to potentially set the flags
+    \def\lp@readyflag{0}%
+    \ifcsname lp@path@ready@#2\endcsname
+      \edef\lp@readyflag{\csname lp@path@ready@#2\endcsname}%
+    \fi
+    \if\lp@readyflag1%
+      \draw[lp/path,lp/lpath,#1] plot coordinates { \csname lp@path@coords@#2\endcsname };%
+      % Execute step marks if enabled
+      \iflp@lpath@showstepmarks
+        \ifcsname lp@path@stepmarks@#2\endcsname
+          \csname lp@path@stepmarks@#2\endcsname
+        \fi
+      \fi
+      % Execute upmark labels if enabled
+      \iflp@lpath@labelupmarks
+        \ifcsname lp@path@upmarklabels@#2\endcsname
+          \csname lp@path@upmarklabels@#2\endcsname
+        \fi
+      \fi
+      % Execute inside corner visualization if enabled
+      \iflp@lpath@showinsidecorners
+        \ifcsname lp@path@insidecornerlabels@#2\endcsname
+          \csname lp@path@insidecornerlabels@#2\endcsname
+        \fi
+      \fi
+      % Show endpoints if enabled
+      \iflp@lpath@showendpoints
+        \ifcsname lp@path@gridsize@#2\endcsname
+          % Get the endpoint coordinates
+          \edef\lp@endpoint{\csname lp@path@gridsize@#2\endcsname}%
+          % Draw start point at (0,0)
+          \fill[black] (0,0) circle (2.5pt);%
+          \node[anchor=north east,scale=0.85,font=\scriptsize,black] at (0,0) {(0,0)};%
+          % Draw end point
+          \fill[black] \lp@endpoint circle (2.5pt);%
+          \node[anchor=south west,scale=0.85,font=\scriptsize,black] at \lp@endpoint {\lp@endpoint};%
+        \fi
+      \fi
+      \endgroup
+    \else
+      \endgroup
+      \lp@warn{Coordinates 'lp@path@coords@#2' not ready; run pythontex and recompile.}%
+    \fi
+}
+% TikZ styles for customization
+\tikzset{
+  lp/step mark/.style={black, fill=white},
+  lp/upmark label/.style={anchor=west, scale=0.85, font=\scriptsize},
+}
+% Options for path features (local to current group)
+\tikzset{
+  lplpath/label upmarks/.code={\lp@lpath@labelupmarkstrue},
+  lplpath/show inside corners/.code={\lp@lpath@showinsidecornerstrue},
+  lplpath/show endpoints/.code={\lp@lpath@showendpointstrue},
+  lplpath/show step marks/.code={\lp@lpath@showstepmarkstrue},
+  lplpath/upmark label style/.style={lp/upmark label/.style={#1}},
+  lplpath/step mark style/.style={lp/step mark/.style={#1}},
+}
+
+% \highlightInsideCorner[<style>]{<pathName>}{<corner number (1-based)>}
+% Highlights a specific inside corner by its 1-based position in the inside corners list
+\newcommand\highlightInsideCorner[3][red]{%
+  \ifcsname lp@path@insidecornercoord@#2@#3\endcsname
+    % Get the coordinate
+    \edef\lp@cornercoord{\csname lp@path@insidecornercoord@#2@#3\endcsname}%
+    % Draw with user-specified style
+    \fill[#1] \lp@cornercoord circle (2pt);%
+    \node[anchor=south east,scale=0.85,font=\scriptsize] at \lp@cornercoord {\scriptsize \lp@cornercoord};%
+  \else
+    \lp@warn{Inside corner #3 not found in path '#2'}%
+  \fi
+}
+
+\endinput

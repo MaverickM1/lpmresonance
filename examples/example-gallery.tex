@@ -1,0 +1,568 @@
+% !TEX TS-program = latexmk
+
+\documentclass{article}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{lpmresonance}
+\usepackage[margin=1in]{geometry}
+\usepackage{minted}
+\usepackage{pythontex}
+\usepackage{amssymb}
+
+\title{LPM Resonance Package: Examples}
+\author{Prajwal Dhondiram Udanshive}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Basic Lattice Paths}
+
+\subsection{Simple Path Declaration and Drawing}
+
+Declare a lattice path from a bit string (0=right, 1=up) and draw it:
+
+\begin{minted}[fontsize=\small]{latex}
+\begin{tikzpicture}
+  \lpDeclarePath{S1}{0010011001}
+  \drawLatticePath[lplpath/label upmarks]{S1}
+\end{tikzpicture}
+
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{S1}{0010011001}
+  \drawLatticePath{S1}
+\end{tikzpicture}
+\end{center}
+
+\par\noindent with grid:
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{S1}{0010011001}
+  \drawLatticePath[lplpath/label upmarks]{S1}
+  \drawGrid{S1}
+\end{tikzpicture}
+\end{center}
+
+\section{Visual Step Counting}
+
+When drawing lattice paths without a grid, it can be hard to count steps. The \texttt{lplpath/show step marks} option places dots/gaps at each lattice point the path visits, making step counting immediate.
+
+Compare paths with and without step marks:
+
+\begin{minted}[fontsize=\small]{latex}
+% Without step marks - harder to count
+\lpDeclarePath{Demo}{001011010}
+\drawLatticePath[blue, very thick]{Demo}
+
+% With step marks - easy to count
+\drawLatticePath[blue, very thick, lplpath/show step marks]{Demo}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{Demo1}{001011010}
+  \node[anchor=south, font=\small\bfseries] at (3.5, 5.2) {Without Step Marks};
+  \drawLatticePath[blue, very thick]{Demo1}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{Demo2}{001011010}
+  \node[anchor=south, font=\small\bfseries] at (3.5, 5.2) {With Step Marks};
+  \drawLatticePath[blue, very thick, lplpath/show step marks]{Demo2}
+\end{tikzpicture}
+\end{center}
+
+\subsection{Customizable Step Mark Colors}
+
+Step marks can be styled with any TikZ options:
+
+\begin{minted}[fontsize=\small]{latex}
+% Red dots with yellow fill
+\drawLatticePath[blue, very thick, 
+                 lplpath/show step marks,
+                 lplpath/step mark style={red, fill=yellow}]{Path}
+
+% Orange dots
+\drawLatticePath[blue, very thick,
+                 lplpath/show step marks,
+                 lplpath/step mark style={orange, fill=orange!30}]{Path}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{ColorDemo1}{001011010}
+  \node[anchor=south, font=\small\bfseries] at (3.5, 5.2) {Red/Yellow Marks};
+  \drawLatticePath[blue, very thick, 
+                   lplpath/show step marks,
+                   lplpath/step mark style={red, fill=yellow}]{ColorDemo1}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{ColorDemo2}{001011010}
+  \node[anchor=south, font=\small\bfseries] at (3.5, 5.2) {Orange Marks};
+  \drawLatticePath[blue, very thick,
+                   lplpath/show step marks,
+                   lplpath/step mark style={orange, fill=orange!30}]{ColorDemo2}
+\end{tikzpicture}
+\end{center}
+
+\section{Styled Lattice Paths}
+
+Apply TikZ styling options:
+
+\begin{minted}[fontsize=\small]{latex}
+  \lpDeclarePath{RedPath}{0110}
+  \drawLatticePath[red, line width=2pt]{RedPath}
+\lpDeclarePath{BluePath}{1001}
+  \drawLatticePath[blue, dashed, line width=1.5pt]{BluePath}
+  \lpDeclarePath{GreenPath}{0101}
+  \drawLatticePath[green!60!black, ultra thick, dotted]{GreenPath}
+\end{minted}
+
+\par\noindent and get
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{RedPath}{0110}
+  \drawLatticePath[red, line width=2pt]{RedPath}
+  \draw[gray!30] (0,0) grid (4,4);
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{BluePath}{1001}
+  \drawLatticePath[blue, dashed, line width=1.5pt]{BluePath}
+  \draw[gray!30] (0,0) grid (4,4);
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{GreenPath}{0101}
+  \drawLatticePath[green!60!black, ultra thick, dotted]{GreenPath}
+  \draw[gray!30] (0,0) grid (4,4);
+\end{tikzpicture}
+\end{center}
+
+\section{Path Constraints}
+
+\subsection{Bounded Paths}
+
+Draw paths that stay between lower and upper bounds:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{Lower}{00000111111}
+\lpDeclarePath{Upper}{1011101000}
+\drawLatticePath[red, very thick]{Lower}
+\drawLatticePath[blue, very thick]{Upper}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+\lpDeclarePath{Lower}{00000111111}
+\lpDeclarePath{Upper}{1011101000}
+\lpDeclarePath{Middle}{1001001110}
+  \drawLatticePath[red, very thick, lplpath/label upmarks]{Lower}
+  \drawLatticePath[orange, very thick, lplpath/label upmarks]{Middle}
+  \drawLatticePath[blue, very thick, lplpath/label upmarks]{Upper}
+  \drawGrid{Lower}
+\end{tikzpicture}
+\end{center}
+
+\subsection{Using Python}
+Lower bound: \texttt{00010111} \\
+Upper bound: \texttt{10111000}
+\begin{minted}[fontsize=\small,breaklines]{python}
+from lpm_paths.types import LatticePath
+from itertools import combinations
+
+lower = LatticePath.from_bits("00010111")
+upper = LatticePath.from_bits("10111000")
+
+n_total = len(lower.bits)
+n_ones = lower.bits.count('1')
+
+paths = []
+for ones_positions in combinations(range(n_total), n_ones):
+    bits = ['0'] * n_total
+    for pos in ones_positions:
+        bits[pos] = '1'
+    bitstring = ''.join(bits)
+
+    curr_path = LatticePath.from_bits(bitstring)
+    if all(lower.coords[i][1] <= curr_path.coords[i][1] <= upper.coords[i][1]
+           for i in range(len(curr_path.coords))):
+        paths.append(bitstring)
+
+paths = sorted(paths)
+max_show = 10
+shown = paths[:max_show]
+
+print(f"Found {len(paths)} lattice paths between the bounds.")
+if len(paths) > max_show:
+    print(f"Showing first {max_show} paths for clarity.")
+print(r"""
+\\
+\begin{tikzpicture}[scale=0.6]
+  \lpDeclarePath{Lower}{00010111}
+  \lpDeclarePath{Upper}{10111000}
+  \drawGrid{Lower}
+  \drawLatticePath[orange, thick]{Lower}
+  \drawLatticePath[cyan!70!black, very thick]{Upper}
+""")
+
+colors = ["blue", "orange", "green", "purple", "teal", "magenta", "brown", "cyan!60!black"]
+legend_y_start = 5.5
+legend_step = 0.35
+
+for i, bitstring in enumerate(shown):
+    path_name = f"path{i+1}"
+    color = "black!65"
+    opacity = 0.85
+
+    print(rf"  \lpDeclarePath{{{path_name}}}{{{bitstring}}}")
+    print(rf"  \drawLatticePath[{color}, thick, opacity={opacity}, lplpath/label upmarks]{{{path_name}}}")
+
+    legend_y = legend_y_start - i * legend_step
+    print(rf"  \node[anchor=west] at (6.3,{legend_y:.2f}) {{\scriptsize \texttt{{{bitstring}}} -- {path_name}}};")
+
+print(r"\end{tikzpicture}")
+\end{minted}
+
+\begin{pycode}
+from lpm_paths.types import LatticePath
+from itertools import combinations
+
+# Define the bounds
+lower = LatticePath.from_bits("00010111")
+upper = LatticePath.from_bits("10111000")
+
+# Get the total length and number of ones
+n_total = len(lower.bits)
+n_ones = lower.bits.count('1')
+
+# Generate all bit strings with the same number of 0s and 1s
+# by choosing which positions get the 1s
+paths = []
+for ones_positions in combinations(range(n_total), n_ones):
+    # Create bit string with 1s at the chosen positions
+    bits = ['0'] * n_total
+    for pos in ones_positions:
+        bits[pos] = '1'
+    bitstring = ''.join(bits)
+    
+    curr_path = LatticePath.from_bits(bitstring)
+    if all(lower.coords[i][1] <= curr_path.coords[i][1] <= upper.coords[i][1]
+           for i in range(len(curr_path.coords))):
+        paths.append(bitstring)
+
+paths = sorted(paths)
+max_show = 10
+shown_paths = paths[:max_show]
+
+# Output as LaTeX text, not plain text
+print(r"\noindent")
+print(f"Found {len(paths)} lattice paths between the bounds.")
+if len(paths) > max_show:
+    print(f"Showing first {max_show} paths for clarity.")
+print(r"\\")
+print("")
+print(r"\begin{center}")
+print(r"\begin{tikzpicture}[scale=0.6]")
+print(r"  \lpDeclarePath{Lower}{00010111}")
+print(r"  \lpDeclarePath{Upper}{10111000}")
+print(r"  \drawGrid{Lower};")
+print(r"  \drawLatticePath[orange, thick,lplpath/label upmarks]{Lower}")
+print(r"  \drawLatticePath[cyan!70!black, very thick,lplpath/label upmarks]{Upper}")
+
+colors = ["blue", "orange", "green", "purple", "teal", "magenta", "brown", "cyan!60!black"]
+legend_y_start = 5.5
+legend_step = 0.35
+
+for i, bitstring in enumerate(shown_paths):
+    path_name = f"path{i+1}"
+    color = "black!65"
+    opacity = 0.85
+
+    print(rf"  \lpDeclarePath{{{path_name}}}{{{bitstring}}}")
+    print(rf"  \drawLatticePath[{color}, thick, opacity={opacity}, lplpath/label upmarks]{{{path_name}}}")
+
+    legend_y = legend_y_start - i * legend_step
+    print(rf"  \node[anchor=west] at (6.3,{legend_y:.2f}) {{\scriptsize \texttt{{{bitstring}}} -- {path_name}}};")
+
+print(r"\end{tikzpicture}")
+print(r"\end{center}")
+\end{pycode}
+
+\section{Path Regions}
+
+Shade the region between two paths:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{LB1}{000111}
+\lpDeclarePath{UB1}{110001}
+\shadeBetweenBits{000111}{110001}{LB1}{UB1}
+\shadeBetween[fill=yellow!30]{LB1}{UB1}
+\drawLatticePath[red, very thick]{LB1}
+\drawLatticePath[blue, very thick]{UB1}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+\lpDeclarePath{LB1}{000111}
+\lpDeclarePath{UB1}{110001}
+  \shadeBetweenBits{000111}{110001}{LB1}{UB1}
+  \shadeBetween[fill=yellow!30]{LB1}{UB1}
+  \drawLatticePath[red, very thick]{LB1}
+  \drawLatticePath[blue, very thick]{UB1}
+  \drawGrid{LB1}
+\end{tikzpicture}
+\end{center}
+
+With upmark labels:
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{LB1}{000111}
+  \lpDeclarePath{UB1}{110001}
+  \shadeBetweenBits{000111}{110001}{LB1}{UB1}
+  \shadeBetween[fill=yellow!30]{LB1}{UB1}
+  \drawLatticePath[red, very thick, lplpath/label upmarks]{LB1}
+  \drawLatticePath[blue, very thick, lplpath/label upmarks]{UB1}
+  \drawGrid{LB1}
+\end{tikzpicture}
+\end{center}
+
+Different shading:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{LB2}{000001111}
+\lpDeclarePath{UB2}{101010010}
+\shadeBetweenBits{000001111}{101010010}{LB2}{UB2}
+\shadeBetween[fill=cyan!20]{LB2}{UB2}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{LB2}{000001111}
+  \lpDeclarePath{UB2}{101010010}
+  \shadeBetweenBits{000001111}{101010010}{LB2}{UB2}
+  \shadeBetween[fill=cyan!20]{LB2}{UB2}
+  \drawLatticePath[red, thick, lplpath/label upmarks]{LB2}
+  \drawLatticePath[blue, thick, lplpath/label upmarks]{UB2}
+  \drawGrid{LB2}
+\end{tikzpicture}
+\end{center}
+
+Multiple paths with shaded regions:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{P1}{00001111}
+\lpDeclarePath{P2}{00110011}
+\lpDeclarePath{P3}{01010101}
+\shadeBetweenBits{00001111}{00110011}{P1}{P2}
+\shadeBetween[fill=red!10]{P1}{P2}
+\shadeBetweenBits{00110011}{01010101}{P2}{P3}
+\shadeBetween[fill=blue!10]{P2}{P3}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{P1}{00001111}
+  \lpDeclarePath{P2}{00110011}
+  \lpDeclarePath{P3}{01010101}
+  \shadeBetweenBits{00001111}{00110011}{P1}{P2}
+  \shadeBetween[fill=red!10]{P1}{P2}
+  \shadeBetweenBits{00110011}{01010101}{P2}{P3}
+  \shadeBetween[fill=blue!10]{P2}{P3}
+  \drawLatticePath[red, very thick, lplpath/label upmarks]{P1}
+  \drawLatticePath[green!60!black, very thick, lplpath/label upmarks]{P2}
+  \drawLatticePath[blue, very thick, lplpath/label upmarks]{P3}
+  \drawGrid{P1}
+\end{tikzpicture}
+\end{center}
+
+
+
+\section{Corner Highlighting}
+
+You can show inside corners and the endpoints of lattice paths (both with coordinates, which lpmresonance computes).
+\subsection{Corners Detection}
+
+Inside corners (east-to-north transitions), and the endpoints:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{IC}{10010010}
+\drawLatticePath[thick, red]{IC}
+\drawLatticePath[lplpath/label upmarks, lplpath/show endpoints, lplpath/show inside corners]{IC}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{IC1}{10010010}
+  \drawLatticePath[thick, red]{IC1}
+  \drawLatticePath[lplpath/show inside corners]{IC1}
+  \drawGrid{IC1}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{IC2}{10000101}
+  \drawLatticePath[thick, blue]{IC2}
+  \drawLatticePath[lplpath/label upmarks,
+lplpath/show inside corners,
+  lplpath/show endpoints]{IC2}
+  \drawGrid{IC2}
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}
+  \lpDeclarePath{IC3}{00000111}
+  \drawLatticePath[thick, green!60!black]{IC3}
+  \drawLatticePath[lplpath/show inside corners]{IC3}
+  \drawGrid{IC3}
+\end{tikzpicture}
+\end{center}
+
+\subsection{Selective Corner Highlighting}
+
+Highlight specific inside corners with custom colours:
+
+\begin{minted}[fontsize=\small]{latex}
+\lpDeclarePath{PA}{10010010}
+\lpDeclarePath{PB}{10000101}
+\drawLatticePath[thick, red]{PA}
+\drawLatticePath[thick, blue]{PB}
+\highlightInsideCorner[orange]{PA}{1}
+\highlightInsideCorner[purple]{PB}{2}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  \lpDeclarePath{PA}{10010010}
+  \lpDeclarePath{PB}{10000101}
+  \lpDeclarePath{PC}{00000111}
+  \drawLatticePath[thick, red]{PA}
+  \drawLatticePath[thick, blue]{PB}
+  \drawLatticePath[thick, green!60!black]{PC}
+  \highlightInsideCorner[orange]{PA}{1}
+  \highlightInsideCorner[purple]{PB}{2}
+  \drawGrid{PA}
+\end{tikzpicture}
+\end{center}
+
+\section{Comprehensive Feature Demo}
+
+Combining all features: shaded regions, upmark labels, and selective inside corner highlighting.
+
+\begin{minted}[fontsize=\small]{latex}
+% Declare three paths
+\lpDeclarePath{Lower}{0000000011111111}
+\lpDeclarePath{Middle}{0001011001101101}
+\lpDeclarePath{Upper}{1010101110001100}
+
+% Generate between region polygon data
+\shadeBetweenBits{0000000011111111}{0001011001101101}{Lower}{Middle}
+\shadeBetweenBits{0001011001101101}{1010101110001100}{Middle}{Upper}
+
+% Shade the regions
+\shadeBetween[fill=blue!10]{Lower}{Middle}
+\shadeBetween[fill=red!10]{Middle}{Upper}
+
+% Draw paths with upmark labels
+\drawLatticePath[blue, very thick, lplpath/label upmarks]{Lower}
+\drawLatticePath[purple, very thick, lplpath/label upmarks]{Middle}
+\drawLatticePath[red, very thick, lplpath/label upmarks]{Upper}
+
+% Highlight specific inside corners
+\highlightInsideCorner[red!70]{Upper}{1}
+\highlightInsideCorner[red!70]{Upper}{3}
+\end{minted}
+
+\begin{center}
+\begin{tikzpicture}
+  % Declare the three paths
+  \lpDeclarePath{Lower}{0000000011111111}
+  \lpDeclarePath{Middle}{0001011001101101}
+  \lpDeclarePath{Upper}{1010101110001100}
+  
+  % Generate between region data
+  \shadeBetweenBits{0000000011111111}{0001011001101101}{Lower}{Middle}
+  \shadeBetweenBits{0001011001101101}{1010101110001100}{Middle}{Upper}
+  
+  % Shade the regions with different colors
+  \shadeBetween[fill=blue!10]{Lower}{Middle}
+  \shadeBetween[fill=red!10]{Middle}{Upper}
+  
+  % Draw the paths with upmark labels
+  \drawLatticePath[blue, very thick, lplpath/label upmarks]{Lower}
+  \drawLatticePath[purple, very thick, lplpath/label upmarks]{Middle}
+  \drawLatticePath[red, very thick, lplpath/label upmarks]{Upper}
+  
+  % Highlight 1st and 3rd inside corners of Upper path
+  \highlightInsideCorner[red!70]{Upper}{1}
+  \highlightInsideCorner[red!70]{Upper}{3}
+  
+  % Draw the grid
+  \drawGrid{Upper}
+\end{tikzpicture}
+\end{center}
+
+This example demonstrates:
+\begin{itemize}
+  \item \textcolor{blue}{Lower path} (\texttt{0000000011111111}): all rights then all ups
+  \item \textcolor{purple}{Middle path} (\texttt{0001011001101101}): lexicographically between lower and upper
+  \item \textcolor{red}{Upper path} (\texttt{1010101110001100}): with 1st and 3rd inside corners highlighted
+  \item Two shaded regions with different colours
+  \item Upmark labels on all three paths showing coordinates
+\end{itemize}
+
+\subsection{A recent example}
+Just for fun!
+\lpDeclarePath{t8p1}{11111100}
+\lpDeclarePath{t8p2}{11111010}
+\lpDeclarePath{t8p3}{11110110}
+\lpDeclarePath{t8p4}{11101110}
+\lpDeclarePath{t8p5}{11011110}
+\lpDeclarePath{t8p6}{10111110}
+\lpDeclarePath{t8p7}{01111110}
+\lpDeclarePath{t8p8}{11111001}
+\lpDeclarePath{t8p9}{11110101}
+\lpDeclarePath{t8p10}{11101101}
+\lpDeclarePath{t8p11}{11011101}
+\lpDeclarePath{t8p12}{10111101}
+\lpDeclarePath{t8p13}{01111101}
+\lpDeclarePath{t8p14}{11110011}
+\lpDeclarePath{t8p15}{11101011}
+\lpDeclarePath{t8p16}{11011011}
+\lpDeclarePath{t8p17}{10111011}
+\lpDeclarePath{t8p18}{01111011}
+\lpDeclarePath{t8p19}{11100111}
+\lpDeclarePath{t8p20}{11010111}
+\lpDeclarePath{t8p21}{10110111}
+\lpDeclarePath{t8p22}{01110111}
+\lpDeclarePath{supportC}{10001000}
+\lpDeclarePath{reb}{00000011}
+
+\begin{center}
+\begin{figure}[!h]
+\begin{tikzpicture}
+      \drawGrid{supportC}
+      \foreach \i in {1,...,22} {
+      \drawLatticePath[
+      lplpath/show endpoints,
+      lplpath/label upmarks,
+      lp/lpath/.style={cyan,thick}]{t8p\i}
+      }
+      \drawLatticePath[
+    lplpath/label upmarks,
+    lplpath/show inside corners,
+    lplpath/show endpoints,
+    lp/lpath/.style={purple,thick}]{supportC}
+  \drawLatticePath[
+    lplpath/label upmarks,
+    lplpath/show endpoints,
+    lp/lpath/.style={black,thick}
+  ]{reb}
+    \end{tikzpicture}
+ \end{figure}
+ \end{center}
+
+\end{document}

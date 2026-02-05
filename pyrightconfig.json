@@ -1,0 +1,10 @@
+{
+  "include": ["python", "tests"],
+  "exclude": ["**/__pycache__", ".venv", "build", "dist", "*.egg-info"],
+  "pythonVersion": "3.9",
+  "typeCheckingMode": "basic",
+  "venvPath": ".",
+  "venv": ".venv",
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false
+}

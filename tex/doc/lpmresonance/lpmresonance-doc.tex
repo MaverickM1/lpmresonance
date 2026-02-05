@@ -1,0 +1,544 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\definecolor{LPBlue}{HTML}{1B4965}
+\definecolor{LPTeal}{HTML}{2EC4B6}
+\definecolor{LPHighlight}{HTML}{FDE74C}
+\definecolor{ListingBg}{HTML}{F7F7FB}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=LPBlue,
+  urlcolor=LPTeal,
+  citecolor=LPBlue
+}
+\usepackage[newfloat]{minted}
+\setminted{
+  fontsize=\small,
+  breaklines=true,
+  bgcolor=ListingBg,
+  autogobble=true,
+  frame=single,
+  framesep=3mm,
+  baselinestretch=1.05,
+  linenos
+}
+\SetupFloatingEnvironment{listing}{name=Listing}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,patterns,backgrounds}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{lpmresonance}
+\makeatletter
+\def\lpdocversion{Draft compiled on \today}
+\makeatother
+\title{The \textsf{lpmresonance} Package\\\large Documentation}
+\author{Prajwal Dhondiram Udanshive}
+\date{\lpdocversion}
+\begin{document}
+\maketitle
+\begin{abstract}
+  \noindent
+  This working draft describes the \textsf{lpmresonance} package. It combines user-facing guidance, implementation commentary, and step-by-step explanations of how the Python--\LaTeX{} bridge orchestrates lattice-path graphics.
+  Code listings rely on the \textsf{minted} environment, and all diagrammatic examples are generated with the actual package macros to keep the documentation faithful to the repository.
+\end{abstract}
+\tableofcontents
+\bigskip
+
+\section{Orientation}
+The \textsf{lpmresonance} package couples TikZ drawing helpers with a Python back-end that converts bit strings into cached coordinates. The package generates annotated lattice paths and between-region shadings from binary strings.
+
+Unlike monolithic TikZ solutions, \textsf{lpmresonance} defers the heavy lifting to PythonTeX: the first compilation pass runs the Python helper, emits JSON \& \TeX{} artifacts in \texttt{lp-cache/}, and later passes pick up the generated coordinates without recomputation. These caching semantics enable rapid iteration on diagram styles without re-running the geometry builder.
+
+\subsection{Audience}
+This document serves three overlapping roles:
+\begin{itemize}[leftmargin=2em]
+  \item A quick reference for mathematicians who only need the high-level macros.
+  \item A detailed guide for maintainers who want to adjust the Python emitter or the TikZ front-end.
+\end{itemize}
+
+\section{Repository at a Glance}
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}p{0.22\linewidth}p{0.72\linewidth}@{}}
+    \toprule
+    Path & Contents \\
+    \midrule
+    \texttt{tex/latex/lpmres} & Package source: \texttt{.sty} dispatcher and modular \texttt{.code.tex} files for base helpers, Python bridge, lattice-path drawing, between regions, grids, and picture environments. \\
+    \texttt{python/lpm\_paths} & Python modules invoked by PythonTeX: API surface, geometry types, caching, hashing, manifest helpers, and TeX emitter routines. \\
+    \texttt{docs/} & MkDocs site used during development complemented by this \LaTeX{} document.\\
+    \texttt{examples/} & Ready-to-compile demonstrations plus cached outputs generated during testing. \\
+    \texttt{scripts/} & Maintenance tasks (\texttt{clean-cache.sh}, \texttt{build-docs.sh}, regression helpers). \\
+    \texttt{tests/} & Python unit tests for geometry and manifest serialization. \\
+    \bottomrule
+  \end{tabular}
+  \caption{Top-level folders relevant to end users (left) and developers (right).}
+\end{table}
+
+\section{Toolchain and Compilation}
+\subsection{Dependencies}
+\begin{itemize}[leftmargin=2em]
+  \item Python~3.9+ with the \texttt{lpm\_paths} package installed in the active virtual environment.
+  \item \TeX{}~Live~2022 or newer with PythonTeX, TikZ, and \textsf{minted} (Pygments) available.
+  \item \texttt{latexmk} (or any equivalent driver) configured with \texttt{-shell-escape} so that both PythonTeX and \textsf{minted} may spawn helper processes.
+\end{itemize}
+
+\subsection{Editable installation}
+\begin{listing}[H]
+\begin{minted}{bash}
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -e .
+\end{minted}
+\caption{Editable install keeps \texttt{lpm\_paths} synchronized with the working tree.}
+\end{listing}
+
+\subsection{Compiling with PythonTeX and minted}
+Use the standard PythonTeX 3-step workflow or latexmk with a configured \texttt{\textasciitilde/.latexmkrc}:
+\begin{listing}[H]
+\begin{minted}{bash}
+# Manual 3-step workflow
+pdflatex -shell-escape lpmresonance-doc.tex
+pythontex lpmresonance-doc
+pdflatex -shell-escape lpmresonance-doc.tex
+
+# Or with latexmk (requires ~/.latexmkrc configured)
+latexmk -pdf -shell-escape lpmresonance-doc.tex
+\end{minted}
+\caption{The \texttt{-shell-escape} flag is mandatory for both PythonTeX and \textsf{minted}.}
+\end{listing}
+The first run executes PythonTeX cells embedded in \texttt{\textbackslash lpDeclarePath} / \texttt{\textbackslash shadeBetweenBits} and produces cached coordinates.
+Subsequent runs reuse those artifacts until the bit strings or sanitized names change.
+
+\section{Quick Start Recap}
+A minimal document resembles the MkDocs walkthrough yet highlights minted listings inside the instructions.
+\begin{listing}[H]
+\begin{minted}{latex}
+\documentclass{article}
+\usepackage{lpmresonance}
+\begin{document}
+\lpDeclarePath{demo}{01011010}
+\begin{schubertpic}
+  \drawGrid{demo}
+  \drawLatticePath[
+    lplpath/label upmarks,
+    lplpath/show inside corners,
+  ]{demo}
+\end{schubertpic}
+\end{document}
+\end{minted}
+\caption{Hello-world lattice path with automatic grid and annotations.}
+\end{listing}
+Running \texttt{latexmk -pdf -shell-escape demo.tex} creates \texttt{lp-cache/path-demo-*.tex/json}, then draws the path on the second pass.
+
+It creates
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \drawGrid{demo}
+    \drawLatticePath[
+      lplpath/label upmarks,
+      lplpath/show inside corners,
+      lp/lpath/.style = {LPBlue, thick}
+    ]{demo}
+  \end{tikzpicture}
+  \caption{Resulting diagram from the minimal example.}
+\end{figure}
+
+
+\section{Mechanism: from bit string to TikZ picture}
+\subsection{Six stages at a glance}
+\begin{enumerate}[leftmargin=2em,label=\textbf{Stage~\arabic*:}]
+  \item \textbf{Declaration in \TeX{}} --- \texttt{\textbackslash lpDeclarePath} collects a human-readable name and a bit string.
+  \item \textbf{PythonTeX payload} --- the macro injects a short Python snippet that calls \texttt{lpm\_paths.api.declare\_path\_from\_json}.
+  \item \textbf{Geometry build} --- \texttt{LatticePath.from\_bits} converts \texttt{0/1} steps into coordinates, upmarks, and inside-corner metadata.
+  \item \textbf{Cache emission} --- the \texttt{TeXEmitter} writes \texttt{lp-cache/path-*.tex} (macro definitions) and \texttt{lp-cache/path-*.json} (manifest for debugging).
+  \item \textbf{Drawing layer} --- \texttt{\textbackslash drawLatticePath}, \texttt{\textbackslash shadeBetween}, and related commands consult the cached macros.
+  \item \textbf{Optional shading helpers} --- \texttt{\textbackslash shadeBetweenBits} feeds two bit strings into \texttt{between\_polygon} and records the resulting polygon.
+\end{enumerate}
+
+\subsection{TeX--Python bridge}
+\texttt{tex/latex/lpmres/lpmres-python.code.tex} contains the high-level bridge:
+\begin{listing}[H]
+\begin{minted}{latex}
+\newcommand\lpDeclarePath[2]{%
+  \pyc{import json;
+      from lpm_paths import declare_path_from_json;
+      spec = {"name": r"""#1""", "bits": r"""#2"""};
+      print(declare_path_from_json(json.dumps(spec, ensure_ascii=False)))}%
+  \lp@inputifready{lp@lastdeclaredpathfile}%
+}
+\newcommand\shadeBetweenBits[4]{%
+  \pyc{import json;
+      from lpm_paths import between_from_json;
+      spec = {"L": r"""#1""", "U": r"""#2""",
+              "lname": r"""#3""", "uname": r"""#4"""};
+      print(between_from_json(json.dumps(spec, ensure_ascii=False)))}%
+  \lp@inputifready{lp@lastdeclaredbetweenfile}%
+  \lp@ensurebetweenplaceholder{#3}{#4}%
+}
+\end{minted}
+\caption{PythonTeX shims for declaration and shading (tex/latex/lpmres/lpmres-python.code.tex).}
+\label{lst:bridge}
+\end{listing}
+Each macro emits fresh \TeX{} code whenever the Python helper prints path metadata.
+The helper itself lives in \texttt{python/lpm\_paths/api.py}:
+\begin{listing}[H]
+\begin{minted}{python}
+def declare_path_from_json(spec_json: str) -> str:
+    spec = json.loads(spec_json)
+    bits = spec.get("bits")
+    name = spec.get("name")
+    cache_id = spec.get("cache_id")
+    emitter = TeXEmitter(Cache.make())
+    g1, g2, g3 = emitter.write_path(bits=bits, name=name, cache_id=cache_id)
+    return "\n".join([g1, g2, g3])
+\end{minted}
+\caption{\texttt{declare\_path\_from\_json} entry point (python/lpm\_paths/api.py).}
+\label{lst:declarepathpy}
+\end{listing}
+
+\subsection{Geometry construction}
+The \texttt{LatticePath} dataclass is the canonical representation of a lattice path.
+\begin{listing}[H]
+\begin{minted}{python}
+@dataclass(frozen=True)
+class LatticePath:
+    bits: str
+    coords: List[Coord]
+    upmarks: List[Upmark]
+    corners: List[int]
+    insideCorners: List[int]
+    ellmap: Dict[int, int]
+
+    @staticmethod
+    def from_bits(bits: str) -> "LatticePath":
+        x = y = 0
+        coords = [(0, 0)]
+        upmarks, corners, insideCorners = [], [], []
+        prev = None
+        stepIndex = 0
+        for b in bits:
+            stepIndex += 1
+            if b == "0":
+                x += 1; cur = "E"
+            else:
+                y += 1; cur = "N"; upmarks.append(stepIndex)
+            coords.append((x, y))
+            if prev is not None and prev != cur:
+                corners.append(stepIndex - 1)
+            if prev == "E" and cur == "N":
+                insideCorners.append(stepIndex - 1)
+            prev = cur
+        ...
+        return LatticePath(bits, coords, upmarks, corners, insideCorners, ellmap)
+\end{minted}
+\caption{Core geometry builder (python/lpm\_paths/types.py).}
+\label{lst:latticepath}
+\end{listing}
+This routine also computes \texttt{ellmap} entries (maximal East reach on each horizontal level) so TikZ styles can align grids and axes.
+
+\subsection{Emitter output}
+\begin{listing}[H]
+\begin{minted}{python}
+class TeXEmitter:
+    def write_path(self, bits: str, name: str, cache_id: str | None = None):
+        safe = _sanitize_name(name)
+        payload = {"op": "declare_path", "bits": bits, "name": name,
+                   "ver": EMITTER_VERSION, "cache_id": cache_id or ""}
+        key = key_of(payload)
+        texname = f"path-{safe}-{key}.tex"
+        jsonname = f"path-{safe}-{key}.json"
+        texpath = self.cache.file(texname)
+        lp = LatticePath.from_bits(bits)
+        body = ["\\makeatletter"]
+        body.append(f"\\expandafter\\gdef\\csname lp@path@coords@{safe}\\endcsname"
+                    f"{{{_formatCoords(lp.coords)}}}")
+        ...
+        atomic_write(texpath, "\n".join(body) + "\n")
+        warn = self._safe_name_warning("path", safe, name)
+        g1 = "\\makeatletter\n" + _gdef(f"lp@pathfile@{safe}", self._tex_path(texpath)) + "\n\\makeatother"
+        return (g1, ..., ...)
+\end{minted}
+\caption{TeXEmitter writes sanitized macro names and caches (python/lpm\_paths/emitters/tex.py).}
+\label{lst:emitter}
+\end{listing}
+Every declared path yields:
+\begin{itemize}[leftmargin=2em]
+  \item \texttt{lp@path@coords@\textless safe\textgreater} --- the coordinate sequence consumed by TikZ.
+  \item \texttt{lp@path@upmarklabels@\textless safe\textgreater} --- pre-formatted \texttt{\textbackslash node} commands.
+  \item \texttt{lp@path@insidecornercoord@\textless safe\textgreater @\textless i\textgreater} --- positional lookup for \texttt{\textbackslash highlightInsideCorner}.
+  \item \texttt{lp@path@gridsize@\textless safe\textgreater} --- bounding box for \texttt{\textbackslash drawGrid}.
+\end{itemize}
+
+\subsection{Drawing layer}
+\begin{listing}[H]
+\begin{minted}{latex}
+\newcommand\drawLatticePath[2][]{%
+  \begingroup
+    \lp@lpath@labelupmarksfalse
+    \lp@lpath@showinsidecornersfalse
+    \tikzset{#1}%
+    \def\lp@readyflag{0}%
+    \ifcsname lp@path@ready@#2\endcsname
+      \edef\lp@readyflag{\csname lp@path@ready@#2\endcsname}%
+    \fi
+    \if\lp@readyflag1%
+      \draw[lp/path,lp/lpath,#1] plot coordinates
+        { \csname lp@path@coords@#2\endcsname };%
+      \iflp@lpath@labelupmarks \csname lp@path@upmarklabels@#2\endcsname \fi
+      \iflp@lpath@showinsidecorners \csname lp@path@insidecornerlabels@#2\endcsname \fi
+      \endgroup
+    \else
+      \endgroup
+      \lp@warn{Coordinates 'lp@path@coords@#2' not ready;}
+    \fi
+}
+\end{minted}
+\caption{Fail-safe drawing routine (tex/latex/lpmres/lpmres-lpath.code.tex).}
+\label{lst:drawpath}
+\end{listing}
+Shading and between-path outlines share nearly identical logic (\texttt{tex/latex/lpmres/lpmres-between.code.tex}):
+\begin{listing}[H]
+\begin{minted}{latex}
+\newcommand\shadeBetween[3][]{%
+  \begingroup
+    \def\lp@readyflag{0}%
+    \ifcsname lp@between@ready@#2@#3\endcsname
+      \edef\lp@readyflag{\csname lp@between@ready@#2@#3\endcsname}%
+    \fi
+    \if\lp@readyflag1%
+      \endgroup
+      \fill[#1] plot coordinates { \csname lp@between@coords@#2@#3\endcsname };%
+    \else
+      \endgroup
+      \lp@warn{Between region (#2,#3) not ready;}
+    \fi
+}
+\end{minted}
+\caption{Shading helper uses cached polygons (tex/latex/lpmres/lpmres-between.code.tex).}
+\label{lst:shadebetween}
+\end{listing}
+
+\section{Macro reference}
+\subsection{Declaring and referencing paths}
+\begin{itemize}[leftmargin=2em]
+  \item \texttt{\textbackslash lpDeclarePath\{name\}\{bits\}} --- declare or overwrite a path. Names are sanitized to \texttt{[A-Za-z0-9\_]} and collisions trigger a package warning.
+  \item \texttt{\textbackslash drawLatticePath[options]\{name\}} --- draw cached coordinates. Options propagate to TikZ. Available feature toggles:
+  \begin{itemize}
+    \item \texttt{lplpath/label upmarks} --- show step indices at North steps
+    \item \texttt{lplpath/show inside corners} --- highlight all inside corners in red
+    \item \texttt{lplpath/show endpoints} --- mark start point (0,0) and endpoint (\#zeros, \#ones) in blue
+    \item \texttt{lplpath/show step marks} --- place dots at each lattice point along the path
+  \end{itemize}
+  \item \texttt{\textbackslash drawGrid[style]\{name\}} --- mirror the bounding box of the declared path. Falls back to silently doing nothing on the first pass.
+  \item \texttt{\textbackslash highlightInsideCorner[style]\{name\}\{index\}} --- pinpoint a single corner using the cached coordinate macros.
+\end{itemize}
+
+\subsection{Style customization}
+The following keys customize the appearance of annotations:
+\begin{itemize}[leftmargin=2em]
+  \item \texttt{lplpath/step mark style=\{<tikz options>\}} --- customize step mark dots (color, fill, size)
+  \item \texttt{lplpath/upmark label style=\{<tikz options>\}} --- customize upmark labels (font, scale, color, anchor)
+\end{itemize}
+Example:
+\begin{listing}[H]
+\begin{minted}{latex}
+\drawLatticePath[
+  lplpath/show step marks,
+  lplpath/label upmarks,
+  lplpath/step mark style={red, fill=yellow},
+  lplpath/upmark label style={scale=1.2, font=\bfseries},
+]{mypath}
+\end{minted}
+\caption{Customizing step marks and upmark labels.}
+\end{listing}
+
+\subsection{Schubert picture helpers}
+The light-weight environment defined in \texttt{tex/latex/lpmres/lpmres-pic.code.tex} avoids repetitive TikZ boilerplate:
+\begin{listing}[H]
+\begin{minted}{latex}
+\newenvironment{schubertpic}[1][]{%
+  \begin{tikzpicture}[x=0.6cm,y=0.6cm, #1]%
+  \draw[gray!30] (0,0) grid +(20,20);%
+  \draw[->] (0,0)--+(21,0); \draw[->] (0,0)--+(0,21);%
+}{%
+  \end{tikzpicture}%
+}
+\end{minted}
+\caption{Default diagram scaffold (tex/latex/lpmres/lpmres-pic.code.tex).}
+\label{lst:schubertpic}
+\end{listing}
+Use nested \texttt{\textbackslash begin\{scope\}} layers to mix multiple shaded regions in the same axes.
+
+\section{Python module details}
+\subsection{Between-region construction}
+The polygon builder ensures walkable regions and removes duplicate points:
+\begin{listing}[H]
+\begin{minted}{python}
+def between_polygon(L_bits: str, U_bits: str) -> List[Coord]:
+    L = LatticePath.from_bits(L_bits)
+    U = LatticePath.from_bits(U_bits)
+    if L.coords[-1] != U.coords[-1]:
+        raise InputSpecError("Paths must share the same endpoint.")
+    upper = U.coords[:]
+    lower = list(reversed(L.coords))[1:-1]
+    polygon = upper + lower + [upper[0]]
+    dedup: List[Coord] = []
+    for c in polygon:
+        if not dedup or dedup[-1] != c:
+            dedup.append(c)
+    return dedup
+\end{minted}
+\caption{\texttt{between\_polygon} emits a closed polygon (python/lpm\_paths/between.py).}
+\label{lst:between}
+\end{listing}
+
+\subsection{Cache fencing}
+\begin{listing}[H]
+\begin{minted}{python}
+@dataclass(frozen=True)
+class Cache:
+    root: str
+
+    @staticmethod
+    def make(root: Optional[str] = None) -> "Cache":
+        r = root or DEFAULT_CACHE_DIR
+        ensure_dir(r)
+        return Cache(root=r)
+
+    def guard_path(self, path: str) -> str:
+        root_real = os.path.realpath(self.root)
+        path_real = os.path.realpath(path)
+        common = os.path.commonpath([root_real, path_real])
+        if common != root_real:
+            raise CacheFenceError(f"Path escapes fence: {path}")
+        return path_real
+\end{minted}
+\caption{Cache sandbox prevents \texttt{../../} escapes (python/lpm\_paths/cache.py).}
+\label{lst:cache}
+\end{listing}
+Every emitted file stays under \texttt{lp-cache/}, and the helper also provides \texttt{tex\_path} for user-friendly relative paths inside warnings.
+
+\subsection{Manifest serialization and hashing}
+Emitted JSON manifests are deterministic because \texttt{lpm\_paths.hashing.key\_of} normalizes input via canonical JSON before running BLAKE2b, ensuring cache hits survive between platforms or when file names change.
+
+\section{Caching and housekeeping}
+The cache layout comprises of: \texttt{lp-cache/path-*.tex}, \texttt{lp-cache/path-*.json}, \texttt{lp-cache/between-*.tex}, plus a \texttt{.names/} directory that tracks the unsanitized names responsible for each path identifier.
+When iterating on the Python module or collecting assets for publication, use \texttt{scripts/clean-cache.sh}:
+\begin{listing}[H]
+\begin{minted}{bash}
+#!/bin/bash
+set -e
+echo "Cleaning lpmresonance build artifacts and cache..."
+find "$PROJECT_ROOT" -type f \( -name "*.aux" -o -name "*.log" \
+  -o -name "*.pytxcode" -o -name "*.fdb_latexmk" \) -delete
+find "$PROJECT_ROOT" -type d -name "pythontex-files-*" -exec rm -rf {} +
+find "$PROJECT_ROOT" -type d -name "_minted-*" -exec rm -rf {} +
+find "$PROJECT_ROOT" -type d -name "lp-cache" -exec rm -rf {} +
+find "$PROJECT_ROOT" -type d -name ".names" -exec rm -rf {} +
+\end{minted}
+\caption{Automated cleanup before packaging (scripts/clean-cache.sh).}
+\label{lst:cleancache}
+\end{listing}
+
+\section{Worked diagrams}
+\lpDeclarePath{docDemo}{01011010010}
+\lpDeclarePath{docMini}{001101}
+\lpDeclarePath{docUpper}{01011001}
+\lpDeclarePath{docLower}{00110101}
+\shadeBetweenBits{00110101}{01011001}{DocLower}{DocUpper}
+
+\subsection{Single annotated path}
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \drawGrid{docDemo}
+    \drawLatticePath[
+      lplpath/label upmarks,
+      lplpath/show inside corners,
+      lplpath/show endpoints,
+      lp/lpath/.style = {LPBlue, thick}
+    ]{docDemo}
+  \end{tikzpicture}
+  \caption{Named path with upmark labels, highlighted inside corners, and endpoints.}
+  \label{fig:singlepath}
+\end{figure}
+The figure stems from the following code fragment:
+\begin{listing}[H]
+\begin{minted}{latex}
+\lpDeclarePath{docDemo}{01011010010}
+\begin{tikzpicture}
+  \drawGrid{docDemo}
+  \drawLatticePath[
+    lplpath/label upmarks,
+    lplpath/show inside corners,
+    lplpath/show endpoints,
+    lp/lpath/.style = {LPBlue, thick},
+  ]{docDemo}
+\end{tikzpicture}
+\end{minted}
+\caption{Code used to generate Figure~\ref{fig:singlepath}.}
+\label{lst:singlepathcode}
+\end{listing}
+
+\subsection{Between-region shading}
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{scope}[on background layer]
+    \drawGrid{docUpper}
+      \shadeBetween[LPHighlight!60]{DocLower}{DocUpper}
+    \end{scope}
+    \drawBetween[LPTeal, thick]{DocLower}{DocUpper}
+    \drawLatticePath[lp/lpath/.style={LPTeal,dashed}]{docLower}
+    \drawLatticePath[lp/lpath/.style={LPBlue}]{docUpper}
+  \end{tikzpicture}
+  \caption{Region sandwiched between two bit strings.}
+  \label{fig:between}
+\end{figure}
+The supporting code mirrors the declarative style encouraged throughout the package:
+\begin{listing}[H]
+\begin{minted}{latex}
+\shadeBetweenBits{00110101}{01011001}{DocLower}{DocUpper}
+\begin{tikzpicture}
+  \begin{scope}[on background layer]
+    \shadeBetween[LPHighlight!60]{DocLower}{DocUpper}
+  \end{scope}
+  \drawBetween[LPTeal, thick]{DocLower}{DocUpper}
+  \drawLatticePath[lp/lpath/.style={LPTeal,dashed}]{docLower}
+  \drawLatticePath[lp/lpath/.style={LPBlue}]{docUpper}
+\end{tikzpicture}
+\end{minted}
+\caption{Code responsible for Figure~\ref{fig:between}.}
+\label{lst:betweenfigcode}
+\end{listing}
+
+\section{Testing, troubleshooting, and release checklist}
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Unit tests:} \texttt{pytest tests/python} checks if we can draw and manifest serialization. Extend this suite whenever Python helpers gain new fields.
+  \item \textbf{End-to-end sanity:} compile \texttt{examples/example.tex} or \texttt{examples/test-features.tex} with \texttt{latexmk -pdf -shell-escape}. Confirm that \texttt{lp-cache/} gains fresh assets and no warnings show up in the log.
+  \item \textbf{Docs and changelog:} refresh \texttt{docs/} (the MkDocs site) plus this \LaTeX{} file when user-facing behavior changes. Keep \texttt{CHANGELOG.md} synchronized with releases.
+  \item \textbf{Packaging:} run \texttt{scripts/clean-cache.sh}, bump the version, tag the release, and upload to PyPI/CTAN.
+\end{itemize}
+
+\section{Future refinements}
+\begin{enumerate}[leftmargin=2em]
+  \item Refine minted listings by splitting implementation details into an appendix once the document leaves draft status.
+  \item Automate screenshot/figure regeneration via a dedicated \texttt{latexmk} target so the diagrams double as regression tests.
+  \item Track cache versioning in \texttt{EMITTER\_VERSION} and surface it inside the documentation to help downstream users diagnose stale assets.
+\end{enumerate}
+
+\bigskip
+\noindent\textbf{Acknowledgments.} The repository already hosts an extensive MkDocs site; this document serves as a printable snapshot that mirrors those instructions while surfacing the underlying mechanism in greater detail.
+
+\end{document}

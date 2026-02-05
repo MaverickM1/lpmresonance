@@ -1,0 +1,44 @@
+# latexmkrc for lpmresonance documentation  
+# Configures automatic compilation with PythonTeX support
+
+# Set TEXINPUTS to find package files
+$ENV{"TEXINPUTS"} = "../../latex/lpmres:" . ($ENV{"TEXINPUTS"} // "");
+
+# Use pdflatex with -shell-escape for minted and PythonTeX
+$pdf_mode = 1;
+$pdflatex = 'pdflatex -interaction=nonstopmode -shell-escape %O %S';
+
+# PythonTeX configuration - check python3 first, fallback to python
+my $python_exe;
+my $test = `python3 --version 2>&1`;
+if ($? == 0 && $test =~ /Python 3\.(9|1[0-9])/) {
+    $python_exe = 'python3';
+} else {
+    $test = `python --version 2>&1`;
+    if ($? == 0 && $test =~ /Python 3\.(9|1[0-9])/) {
+        $python_exe = 'python';
+    } else {
+        die "Error: Python 3.9+ not found. Install from https://www.python.org/downloads/\n";
+    }
+}
+
+# Find pythontex executable using which, with fallback
+my $pythontex_exe = `which pythontex 2>/dev/null`;
+if ($pythontex_exe) {
+    chomp($pythontex_exe);
+} else {
+    $pythontex_exe = 'pythontex';  # fallback to PATH
+}
+
+# Custom dependency: when .pytxcode changes, run pythontex
+add_cus_dep('pytxcode', 'tex', 0, 'run_pythontex');
+
+sub run_pythontex {
+    my $base = shift;
+    return system($python_exe, $pythontex_exe,
+                  '--interpreter', "python:$python_exe", "$base");
+}
+
+# Clean up
+$clean_ext .= ' %R.pytxcode pythontex-files-%R';
+$max_repeat = 5;

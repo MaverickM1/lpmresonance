@@ -1,0 +1,8 @@
+use Cwd qw(abs_path);
+use File::Basename;
+my $repo_root = abs_path('.');
+$ENV{"TEXINPUTS"} = join(':', "$repo_root/tex/latex/lpmres", $ENV{"TEXINPUTS"} // '');
+$pdflatex = 'pdflatex -interaction=nonstopmode -shell-escape %O %S';
+add_cus_dep('pytxcode','tex',0,'pythontex');
+sub pythontex { system("pythontex \"$_[0]\""); }
+$clean_ext .= ' %R.pytxcode %R.pytxmcr pythontex-files-%R';

@@ -1,0 +1,14 @@
+\documentclass{standalone}
+\usepackage{lpmresonance}
+\begin{document}
+
+\lpDeclarePath{T}{0101}
+\begin{schubertpic}[x=0.5cm,y=0.5cm]
+  \drawGrid{T}
+  \drawLatticePath[
+    lplpath/label upmarks,
+    lplpath/show inside corners,
+  ]{T}
+\end{schubertpic}
+
+\end{document}

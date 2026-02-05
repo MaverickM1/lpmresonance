@@ -1,0 +1,85 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.venv/
+venv/
+ENV/
+env/
+
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.pdf
+# Exception: keep CTAN documentation PDF
+!tex/doc/lpmresonance/lpmresonance-doc.pdf
+*.synctex.gz
+*.toc
+*.pytxcode
+*.pytxmcr
+_minted-*/
+pythontex-files-*/
+
+# Cache directories
+lp-cache/
+.names/
+
+# Backup files
+*.bak
+*.backup
+*.before-*
+*.between-*
+*.coords-*
+*.corrupted
+*.broken*
+*.shadeBits
+*.comprehensive
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+
+# Documentation builds
+docs/_build/
+site/
+*.synctex(busy)

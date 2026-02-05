@@ -1,0 +1,39 @@
+\ProvidesFile{lpmres-base.code.tex}[base options, helpers]
+\newcommand\lp@warn[1]{\PackageWarningNoLine{lpmresonance}{#1}}
+\newcommand\lp@readytrue{1}
+\newcommand\lp@readyfalse{0}
+\newcommand\lp@inputifready[1]{%
+  \ifcsname #1\endcsname
+    \edef\lp@inputpath{\csname #1\endcsname}%
+    \IfFileExists{\lp@inputpath}{%
+      \input{\lp@inputpath}%
+    }{%
+      \lp@warn{Data file '\lp@inputpath' not found; run pythontex and recompile.}%
+    }%
+  \else
+    \lp@warn{Data '#1' not ready; run pythontex and recompile.}%
+  \fi
+}
+\newcommand\lpBetweenCoords[2]{%
+  % Always expands to valid coordinates (safe for TikZ parsing)
+  % Returns registered coords if ready, else (0,0) placeholder
+  \expandafter\ifx\csname lp@between@coords@#1@#2\endcsname\relax
+    (0,0)% Not registered - use safe placeholder
+  \else
+    \expandafter\expandafter\expandafter{\csname lp@between@coords@#1@#2\endcsname}%
+  \fi
+}
+\newcommand\lp@ensurebetweenplaceholder[2]{%
+  \unless\ifcsname lp@between@ready@#1@#2\endcsname
+    \expandafter\gdef\csname lp@between@ready@#1@#2\endcsname{0}%
+    \expandafter\gdef\csname lp@between@coords@#1@#2\endcsname{(0,0)}%
+  \fi
+}
+% TikZ styles (extend later)
+\tikzset{
+  lp/path/.style = {line cap=round, line join=round},
+  lp/schubert/.style = {very thick, blue},
+  lp/named/.style = {thick, red},
+  lp/lpath/.style = {thick, red},  % Style for named lattice paths
+}
+\endinput

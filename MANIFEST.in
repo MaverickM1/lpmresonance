@@ -1,0 +1,12 @@
+recursive-include tex/latex *.sty *.tex
+include tex/doc/lpmresonance/lpmresonance-doc.pdf
+include tex/doc/lpmresonance/lpmresonance-doc.tex
+include tex/doc/lpmresonance/latexmkrc
+exclude tex/doc/lpmresonance/*.log
+exclude tex/doc/lpmresonance/*.aux
+exclude tex/doc/lpmresonance/*.out
+exclude tex/doc/lpmresonance/*.toc
+recursive-exclude tex/doc/lpmresonance/lp-cache *
+global-exclude .DS_Store
+global-exclude *.pyc
+global-exclude __pycache__

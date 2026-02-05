@@ -1,0 +1,16 @@
+\documentclass{article}
+\usepackage{lpmresonance}
+\begin{document}
+
+\lpDeclarePath{A}{001101}
+\lpDeclarePath{B}{010011}
+
+\begin{schubertpic}[x=0.45cm,y=0.45cm]
+  \shadeBetweenBits{001101}{010011}{L}{U}
+  \shadeBetween[gray!35]{L}{U}
+  \drawBetween[thick]{L}{U}
+  \drawLatticePath{A}
+  \drawLatticePath{B}
+\end{schubertpic}
+
+\end{document}

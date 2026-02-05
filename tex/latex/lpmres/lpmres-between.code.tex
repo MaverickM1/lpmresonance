@@ -1,0 +1,34 @@
+\ProvidesFile{lpmres-between.code.tex}[Between region drawing helpers]
+% \shadeBetween[<tikz opts>]{<lname>}{<uname>}
+% Safely draws the filled region between two paths when data is ready
+\newcommand\shadeBetween[3][]{%
+  \begingroup
+    \def\lp@readyflag{0}%
+    \ifcsname lp@between@ready@#2@#3\endcsname
+      \edef\lp@readyflag{\csname lp@between@ready@#2@#3\endcsname}%
+    \fi
+    \if\lp@readyflag1%
+      \endgroup
+      \fill[#1] plot coordinates { \csname lp@between@coords@#2@#3\endcsname };%
+    \else
+      \endgroup
+      \lp@warn{Between region (#2,#3) not ready; run pythontex and recompile.}%
+    \fi
+}
+% \drawBetween[<tikz opts>]{<lname>}{<uname>}
+% Safely draws the boundary of the region between two paths when data is ready
+\newcommand\drawBetween[3][]{%
+  \begingroup
+    \def\lp@readyflag{0}%
+    \ifcsname lp@between@ready@#2@#3\endcsname
+      \edef\lp@readyflag{\csname lp@between@ready@#2@#3\endcsname}%
+    \fi
+    \if\lp@readyflag1%
+      \endgroup
+      \draw[#1] plot coordinates { \csname lp@between@coords@#2@#3\endcsname };%
+    \else
+      \endgroup
+      \lp@warn{Between region (#2,#3) not ready; run pythontex and recompile.}%
+    \fi
+}
+\endinput

@@ -1,0 +1,15 @@
+\ProvidesFile{lpmres-grid.code.tex}[Grid helpers for lattice paths]
+
+% \drawGrid[<tikz opts>]{<pathName>}
+% Draws a grid from (0,0) to the path's bounding box dimensions
+% Silent on first pass if grid size not yet computed
+\newcommand\drawGrid[2][gray, very thin]{%
+  \ifcsname lp@schubert@gridsize@#2\endcsname
+    \draw[#1] (0,0) grid \csname lp@schubert@gridsize@#2\endcsname;%
+  \else
+    \ifcsname lp@path@gridsize@#2\endcsname
+      \draw[#1] (0,0) grid \csname lp@path@gridsize@#2\endcsname;%
+    \fi
+  \fi
+}
+\endinput

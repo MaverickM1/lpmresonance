@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use lpmresonance in academic work, please cite it as below."
+title: "lpmresonance: PythonTeX helpers for lattice paths"
+version: 0.0.1
+date-released: 2025-11-11
+authors:
+  - family-names: Udanshive
+    given-names: Prajwal Dhondiram
+    orcid: "https://orcid.org/0009-0006-1286-2734"
+repository-code: "https://github.com/MaverickM1/lpmresonance"
