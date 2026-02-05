@@ -62,6 +62,7 @@
 \tikzset{
   lp/step mark/.style={black, fill=white},
   lp/upmark label/.style={anchor=west, scale=0.85, font=\scriptsize},
+  lp/inside corner label/.style={anchor=south east, scale=0.85, font=\scriptsize},
 }
 % Options for path features (local to current group)
 \tikzset{
@@ -71,6 +72,7 @@
   lplpath/show step marks/.code={\lp@lpath@showstepmarkstrue},
   lplpath/upmark label style/.style={lp/upmark label/.style={#1}},
   lplpath/step mark style/.style={lp/step mark/.style={#1}},
+  lplpath/inside corner label style/.style={lp/inside corner label/.style={#1}},
 }
 
 % \highlightInsideCorner[<style>]{<pathName>}{<corner number (1-based)>}
@@ -81,7 +83,7 @@
     \edef\lp@cornercoord{\csname lp@path@insidecornercoord@#2@#3\endcsname}%
     % Draw with user-specified style
     \fill[#1] \lp@cornercoord circle (2pt);%
-    \node[anchor=south east,scale=0.85,font=\scriptsize] at \lp@cornercoord {\scriptsize \lp@cornercoord};%
+    \node[lp/inside corner label] at \lp@cornercoord {\lp@cornercoord};%
   \else
     \lp@warn{Inside corner #3 not found in path '#2'}%
   \fi

@@ -213,7 +213,7 @@ class TeXEmitter:
                 coord = lp.coords[idx]
                 x, y = coord[0], coord[1]
                 corner_cmds.append(f"\\fill[red] ({x},{y}) circle (2pt);%\n")
-                corner_cmds.append(f"\\node[anchor=south east,scale=0.85,font=\\scriptsize] at ({x},{y}) {{\\scriptsize ({x},{y})}};%\n")
+                corner_cmds.append(f"\\node[lp/inside corner label] at ({x},{y}) {{({x},{y})}};%\n")
             corners_str = "".join(corner_cmds)
             body.append(f"\\expandafter\\gdef\\csname lp@path@insidecornerlabels@{safe}\\endcsname{{{corners_str}}}")
             

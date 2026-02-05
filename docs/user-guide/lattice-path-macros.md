@@ -80,6 +80,17 @@ Enable the annotations via scoped TikZ keys:
 step. `lplpath/show inside corners` fills each inside corner in red and prints
 its coordinates using the default styling from `lpmres-lpath.code.tex`.
 
+You can customize the appearance of these labels:
+
+```tex
+\drawLatticePath[
+  lplpath/label upmarks,
+  lplpath/upmark label style={scale=1.2, font=\bfseries},
+  lplpath/show inside corners,
+  lplpath/inside corner label style={blue, scale=1.0},
+]{demo}
+```
+
 Need a single corner? Use the explicit helper:
 
 ```tex

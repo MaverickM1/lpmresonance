@@ -12,13 +12,14 @@ style we ship by calling `\tikzset` in your document preamble.
 `lpmres-base.code.tex` and `lpmres-lpath.code.tex` define the following styles:
 
 | Style                | Default definition                              | Used by                     |
-|----------------------|--------------------------------------------------|-----------------------------|
+|----------------------|--------------------------------------------------|-----------------------------||
 | `lp/path`            | `line cap=round, line join=round`                | Every lattice path          |
 | `lp/lpath`           | `thick, red`                                     | `\drawLatticePath`          |
 | `lp/named`           | `thick, red` (legacy alias)                      | Backwards compatibility     |
 | `lp/schubert`        | `very thick, blue`                               | Reserved for Schubert pics  |
 | `lp/step mark`       | `black, fill=white`                              | Step mark dots              |
 | `lp/upmark label`    | `anchor=west, scale=0.85, font=\scriptsize`      | Upmark number labels        |
+| `lp/inside corner label` | `anchor=south east, scale=0.85, font=\scriptsize` | Inside corner coordinate labels |
 
 You can override them globally:
 
@@ -28,6 +29,7 @@ You can override them globally:
   lp/path/.style = {line cap=butt},
   lp/step mark/.style = {orange, fill=orange!30},
   lp/upmark label/.style = {scale=1.2, font=\bfseries},
+  lp/inside corner label/.style = {blue, scale=1.0},
 }
 ```
 
@@ -55,10 +57,11 @@ Because the keys live inside a TeX group, the flags reset at the end of each
 
 ### Customizing step marks and labels
 
-The appearance of step marks and upmark labels can be customized using TikZ styles:
+The appearance of step marks, upmark labels, and inside corner labels can be customized using TikZ styles:
 
 - `lplpath/step mark style={<tikz options>}` — customize the appearance of step mark dots (color, fill, size, etc.)
 - `lplpath/upmark label style={<tikz options>}` — customize the appearance of upmark labels (font, scale, color, anchor, etc.)
+- `lplpath/inside corner label style={<tikz options>}` — customize the appearance of inside corner coordinate labels (font, scale, color, anchor, etc.)
 
 Example:
 
@@ -68,6 +71,8 @@ Example:
   lplpath/step mark style={red, fill=yellow},
   lplpath/label upmarks,
   lplpath/upmark label style={scale=1.2, font=\bfseries},
+  lplpath/show inside corners,
+  lplpath/inside corner label style={blue, scale=1.0},
 ]{MyPath}
 ```
 

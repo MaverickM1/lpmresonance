@@ -36,6 +36,11 @@ files via `\lp@inputifready`.
 - `lplpath/label upmarks` — label North steps with their index.
 - `lplpath/show inside corners` — draw disks and coordinate labels on every
   East→North corner.
+- `lplpath/show step marks` — place dots at each lattice point along the path.
+- `lplpath/show endpoints` — mark the start and end points of the path.
+- `lplpath/step mark style={<opts>}` — customize step mark appearance.
+- `lplpath/upmark label style={<opts>}` — customize upmark label appearance.
+- `lplpath/inside corner label style={<opts>}` — customize inside corner label appearance.
 
 Standard TikZ options (e.g. `densely dashed`, `line width=1pt`) can be mixed in.
 

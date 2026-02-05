@@ -10,6 +10,7 @@ title: Changelog
 - Added `lplpath/show step marks` option to place visual markers (dots) at each lattice point along a path, improving step counting when grids are not displayed.
 - Added `lplpath/step mark style` option to customize the appearance of step mark dots (color, fill, size).
 - Added `lplpath/upmark label style` option to customize the appearance of upmark number labels (font size, scale, color, anchor).
+- Added `lplpath/inside corner label style` option to customize the appearance of inside corner coordinate labels (font, scale, color, anchor).
 - Updated `lpm_paths.emitters.tex` to generate step mark coordinates and emit TikZ style-based rendering commands.
 
 ### Installation & Infrastructure

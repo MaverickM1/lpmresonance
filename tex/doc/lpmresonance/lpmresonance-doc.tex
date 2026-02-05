@@ -349,6 +349,7 @@ The following keys customize the appearance of annotations:
 \begin{itemize}[leftmargin=2em]
   \item \texttt{lplpath/step mark style=\{<tikz options>\}} --- customize step mark dots (color, fill, size)
   \item \texttt{lplpath/upmark label style=\{<tikz options>\}} --- customize upmark labels (font, scale, color, anchor)
+  \item \texttt{lplpath/inside corner label style=\{<tikz options>\}} --- customize inside corner coordinate labels (font, scale, color, anchor)
 \end{itemize}
 Example:
 \begin{listing}[H]
@@ -358,6 +359,8 @@ Example:
   lplpath/label upmarks,
   lplpath/step mark style={red, fill=yellow},
   lplpath/upmark label style={scale=1.2, font=\bfseries},
+  lplpath/show inside corners,
+  lplpath/inside corner label style={blue, scale=1.0},
 ]{mypath}
 \end{minted}
 \caption{Customizing step marks and upmark labels.}
